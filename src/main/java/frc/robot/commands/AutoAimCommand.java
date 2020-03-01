@@ -26,7 +26,7 @@ public class AutoAimCommand extends CommandBase {
   );
   private final boolean aimed = false;
   private double targetSpeed;
-  private final double threshold =  
+  private final double threshold =  0;
 
   public AutoAimCommand(VisionSubsystem m_VisionSubsystem, ShooterSubsystem s_ShooterSubsystem){ 
     this.m_VisionSubsystem = m_VisionSubsystem;

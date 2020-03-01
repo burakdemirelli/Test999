@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -38,6 +39,7 @@ public class RobotContainer {
   public final static DriveTrainSubsystem m_DriveTrain = new DriveTrainSubsystem();
 
   private final PigeonIMU turretGyro = new PigeonIMU(0);
+  private final AHRS bodyGyro = new AHRS();
 
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
 
@@ -60,7 +62,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
 
-    m_TurretSubsystem = new TurretSubsystem(turretGyro);
+    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro);
 
     configureButtonBindings();
   }
@@ -88,18 +90,26 @@ public class RobotContainer {
        m_IntakeSubsystem));
 
   m_TurretSubsystem.setDefaultCommand(
-      new RunCommand ( () -> m_TurretSubsystem.turretDrive(
-        operator.getRawAxis(4)),
-         m_TurretSubsystem)
+      new RunCommand (
+        () -> {
+          double move = operator.getRawAxis(4);
+          System.out.println(move);
+          if (Math.abs(move) > 0.1) {
+            m_TurretSubsystem.set(move);
+          } else {
+            m_TurretSubsystem.goHome();
+          }
+        },
+       m_TurretSubsystem
+      )
     );
+  
+  
+  
   
     new JoystickButton(operator, 7)
       .whenPressed(new HoodToggleCommand(m_ShooterSubsystem));
-
-
   
-  
-
     new JoystickButton(operator, 5)
     .whileHeld(new InstantCommand(m_StorageSubsystem::storageIn, m_StorageSubsystem))
     .whenReleased(new InstantCommand(m_StorageSubsystem::stopEverything, m_StorageSubsystem));

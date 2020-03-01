@@ -27,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
   private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB));
 
-  private boolean hoodRaised = false;
+  private boolean hoodRaised = true;
 
   //#region Shooter
 
@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
   //#region hood
 
   public void setHood(String direction) {
-    double speed = (direction.equals(in) ?  0.6 : -1) * Constants.hoodSpeed;
+    double speed = (direction.equals(in) ?  0.6838 : -1) * Constants.hoodSpeed;
     System.out.println("setting hood to " + speed);
     hood.set(speed);
   }

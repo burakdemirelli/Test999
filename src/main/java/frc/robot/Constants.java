@@ -101,6 +101,9 @@ public final class Constants {
 	public static final double hoodMoveTime = 0.3;
     
 	public static final int PDP_hoodChannel = 0;
+	public static final double autoAimP = 0;
+	public static final double autoAimI = 0;
+	public static final double autoAimD = 0;
 
 
 
