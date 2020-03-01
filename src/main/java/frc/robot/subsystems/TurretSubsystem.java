@@ -11,8 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
@@ -23,21 +24,24 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final WPI_VictorSPX turret = new WPI_VictorSPX(Constants.k_turretPort);
 
-  private final double kP = Constants.kP;
+  private final double kP = -Constants.kP;
   private final double kI = Constants.kI;
   private final double kD = Constants.kD;
 
   private final PIDController turretPID = new PIDController(kP, kI, kD);
   private final PigeonIMU turretGyro;
   private AHRS bodyGyro;
+  private double initAngle;
 
   private final double home = -90;
   
-  private final double[] edges = {-135, 45};
+  private final double[] edges = {-100, 45};
 
-  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro){
+  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro, double initAngle){
     turretGyro = gyro;
     turretGyro.setYaw(home);
+
+    this.initAngle = initAngle;
     this.bodyGyro = bodyGyro;
     turretPID.setTolerance(2,4);
 
@@ -64,15 +68,15 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void turnToAngle(double angle) {
-    // if (turretPID.atSetpoint() != true) {
-    //   turret.set(
-    //     MathUtil.clamp(
-    //       turretPID.calculate(getRelativeAngle(), angle) - 0.6,
-    //       0.6, 
-    //       angle
-    //     )
-    //   );
-    // }
+     if (turretPID.atSetpoint() != true) {
+       turret.set(
+         MathUtil.clamp(
+           turretPID.calculate(getRelativeAngle(), angle) - 0.6,
+           0.6, 
+           angle
+         )
+       );
+     }
   }
 
   public void goHome() {
@@ -82,7 +86,11 @@ public class TurretSubsystem extends SubsystemBase {
   
 
   public double getRelativeAngle() {
-    return getGyroAngle() - bodyGyro.getAngle();
+    return getGyroAngle() - getBodyAngle();
+  }
+
+  public double getBodyAngle(){
+    return bodyGyro.getAngle() - initAngle;
   }
 
   public double getGyroAngle() {
@@ -106,9 +114,51 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.print  (distancesToEdges()[0]);
-    System.out.print  (", ");
-    System.out.println(distancesToEdges()[1]);
+
+    /*
+    m_VisionSubsystem.angle_Pitch = Math.floor(m_VisionSubsystem.pitch.getDouble(0.0)*100/100d);
+    m_VisionSubsystem.angle_Total = Math.toDegrees(m_VisionSubsystem.angle_Pitch + m_VisionSubsystem.angle_Camera);
+    SmartDashboard.putNumber("distance", (m_VisionSubsystem.height_Target - m_VisionSubsystem.height_Camera) / Math.tan(m_VisionSubsystem.angle_Total));
+    SmartDashboard.putNumber("pitch", m_VisionSubsystem.angle_Pitch);
+    SmartDashboard.putNumber("dist", (m_VisionSubsystem.height_Target - m_VisionSubsystem.height_Camera));
+    SmartDashboard.putNumber("tan", Math.tan(Math.toDegrees(m_VisionSubsystem.angle_Camera + m_VisionSubsystem.angle_Pitch)));
+    */
+
+
+    double height_Target = Constants.first_Height + Constants.second_Height;
+    double height_Camera = Constants.height_Cam;
+    double angle_Camera = Constants.angle_cam;
+    double angle_Pitch = Constants.angle_Pitch;
+    double angle_Total = Constants.angle_Total;
+
+    final double targetHeight = 249.55;
+    final double camHeight = 69.5;
+  
+    NetworkTableInstance table = NetworkTableInstance.getDefault();
+  
+    NetworkTable camTable = table.getTable("chameleon-vision").getSubTable("Microsoft LifeCam HD-3000");
+  
+    
+    double yaw = camTable.getEntry("targetYaw").getDouble(0.0);
+    double pitch = camTable.getEntry("targetPitch").getDouble(0.0);
+     final double initial_pitch =14.117653850117721;
+
+    
+    //initial_pitch = Math.toDegrees(Math.atan((- camHeight + targetHeight) / 433)) - pitch;
+
+    double distance = (targetHeight-camHeight) /   Math.tan(Math.toRadians(pitch + initial_pitch));
+    System.out.println(distance);
+    
+    //dist:392.5
+    //kamera yükseklik:70
+    //hedef yükseklik
+
+    SmartDashboard.putNumber("camera angle", initial_pitch);
+    SmartDashboard.putNumber("distance", distance);
+    SmartDashboard.putNumber("pitch", pitch);
+
+  
 
   }
 }
+ 

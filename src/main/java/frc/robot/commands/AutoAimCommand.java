@@ -65,7 +65,7 @@ public class AutoAimCommand extends CommandBase {
 
   }
 
-  private void calculateThings() {
+  private void getDistance() {
     m_VisionSubsystem.angle_Pitch = Math.floor(m_VisionSubsystem.pitch.getDouble(0.0)*100/100d);
     m_VisionSubsystem.angle_Total = Math.toDegrees(m_VisionSubsystem.angle_Pitch + m_VisionSubsystem.angle_Camera);
     SmartDashboard.putNumber("distance", (m_VisionSubsystem.height_Target - m_VisionSubsystem.height_Camera) / Math.tan(m_VisionSubsystem.angle_Total));
@@ -73,6 +73,9 @@ public class AutoAimCommand extends CommandBase {
     SmartDashboard.putNumber("dist", (m_VisionSubsystem.height_Target - m_VisionSubsystem.height_Camera));
     SmartDashboard.putNumber("tan", Math.tan(Math.toDegrees(m_VisionSubsystem.angle_Camera + m_VisionSubsystem.angle_Pitch)));
     
+
+
+
   }
 
   // Called once the command ends or is interrupted.
