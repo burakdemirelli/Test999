@@ -10,25 +10,22 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 
 public class ShooterSubsystem extends SubsystemBase {
 
-  static final String in = "in";
-  static final String out = "out";
+  public static final String in = "in";
+  public static final String out = "out";
 
 
   private WPI_TalonSRX shooterMaster = new WPI_TalonSRX(Constants.k_shooterMPort);
-  private WPI_TalonSRX shooterSlave = new WPI_TalonSRX(Constants.k_shooterSPort);
+  private WPI_VictorSPX shooterSlave = new WPI_VictorSPX(Constants.k_shooterSPort);
   private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
-  private Encoder shooterEncoder = new Encoder(Constants.shooterEncoderA, Constants.shooterEncoderB, false);
-
-  private PowerDistributionPanel pdp = new PowerDistributionPanel();
+  private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB));
 
   private boolean hoodRaised = false;
 
@@ -37,14 +34,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public void revShooter() {
     // standard speed to set shooter to when preparing for a shot
     shooterMaster.setVoltage(Constants.shooterRevSpeed);
+
   }
 
   public void setShooter(double speed) {
     shooterMaster.set(speed);
   }
 
-  public void setShooterVoltage(double speed) {
-    shooterMaster.setVoltage(speed);
+  public void setShooterVoltage(double voltage) {
+    shooterMaster.setVoltage(voltage);
   }
 
   public void stopShooter() {
@@ -53,6 +51,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getShooterSpeed() {
     return shooterEncoder.getRate();
+  }
+  
+  public boolean shooterRevved() {
+    return true;
   }
 
   //#endregion
@@ -65,28 +67,34 @@ public class ShooterSubsystem extends SubsystemBase {
   //#region hood
 
   public void setHood(String direction) {
-    double speed = (direction.equals(in) ?  1 : -1) * Constants.hoodSpeed;
+    double speed = (direction.equals(in) ?  0.6 : -1) * Constants.hoodSpeed;
+    System.out.println("setting hood to " + speed);
     hood.set(speed);
-    hoodRaised = direction.equals(out);
   }
 
-  public void stopHood() {
+  //ben biraktim indi
+  //                -kaganin annesi
+
+  public void stopHood(String finalState) {
+      hood.set(0);
+      System.out.println("setting hood to 0");
+      hoodRaised = finalState.equals(out);
+  }
+
+  public void stopHoodOnly() {
       hood.set(0);
   }
 
-  public double getHoodCurrent() {
-      return pdp.getCurrent(Constants.PDP_hoodChannel);
-  }
-
-  public boolean getHoodIsRaised() {
-      return this.hoodRaised;
+  public String getHoodState() {
+      return this.hoodRaised ? out : in;
   }
   //#endregion
 
 
   public ShooterSubsystem() {
-      shooterSlave.follow(shooterMaster);
-
+    super();
+    shooterSlave.follow(shooterMaster);
+    
 
   }
 

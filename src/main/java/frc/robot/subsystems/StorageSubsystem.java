@@ -14,9 +14,7 @@ import frc.robot.Constants;
 public class StorageSubsystem extends SubsystemBase {
 
   private Victor storage = new Victor(Constants.k_storagePort);
-  private Victor feeder = new Victor(Constants.k_feederPort);
-  private Victor feederBoost = new Victor(Constants.k_feederBoostPort);
-
+ 
   public void storageIn() {
     storage.set(Constants.storageSpeed);
     
@@ -27,8 +25,7 @@ public class StorageSubsystem extends SubsystemBase {
 
   public void stopEverything() {
     storage.set(0);
-    feeder.set(0);
-    feederBoost.set(0);
+
   }
 
   public void runStorage() {
@@ -39,21 +36,6 @@ public class StorageSubsystem extends SubsystemBase {
     storage.set(0);
   }
 
-  public void runFeederBoost() {
-    feederBoost.set(Constants.feederBoostSpeed);
-  }
-
-  public void stopFeederBoost() {
-    feederBoost.set(0);
-  }
-
-  public void runFeeder() {
-    feeder.set(Constants.feederSpeed);
-  }
-
-  public void stopFeeder() {
-    feeder.set(0);
-  }  
   /**
    * Creates a new StorageSubsystem.
    */

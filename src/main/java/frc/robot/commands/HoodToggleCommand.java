@@ -14,12 +14,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class HoodToggleCommand extends CommandBase {
+  private final ShooterSubsystem m_ShooterSubsystem;
 
-  private final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
   private double startTime = 0;
   private String initialState;
 
-  public HoodToggleCommand() {
+  public HoodToggleCommand(ShooterSubsystem s_ShooterSubsystem){ 
+     m_ShooterSubsystem = s_ShooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_ShooterSubsystem);
   }
@@ -28,25 +29,33 @@ public class HoodToggleCommand extends CommandBase {
   @Override
   public void initialize() {
       startTime = Timer.getFPGATimestamp();
-      m_ShooterSubsystem.setHood("down");
+      initialState= m_ShooterSubsystem.getHoodState();
+      if (initialState.equals(ShooterSubsystem.in)) {
+        m_ShooterSubsystem.setHood("out");
+      } else {
+        m_ShooterSubsystem.setHood("in");
+      }
+      System.out.println("starting hood movement");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        if (Timer.getFPGATimestamp() - startTime < Constants.hoodDownTime) {
-            m_ShooterSubsystem.stopHood();
-        }
-  }
+    if (Timer.getFPGATimestamp() - startTime > Constants.hoodMoveTime) {
+      end(true);
+    }
 
+  }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_ShooterSubsystem.stopHood(initialState.equals(ShooterSubsystem.in)?ShooterSubsystem.out:ShooterSubsystem.in);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ;
+    return !initialState.equals(m_ShooterSubsystem.getHoodState());
   }
 }

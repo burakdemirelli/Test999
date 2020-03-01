@@ -71,7 +71,7 @@ public final class Constants {
 	public static final double angle_Total = 0;
 
 //Turret
-	public static final int k_turretPort = 20;
+	public static final int k_turretPort = 0;
 	public static final int kP = 0;
 	public static final int kI = 0;
 	public static final int kD = 0;
@@ -91,12 +91,14 @@ public final class Constants {
     
     // Shooter
     public static final int k_shooterMPort = 0;
-    public static final int k_shooterSPort = 0;
-    public static final int k_hoodPort = 0;
+    public static final int k_shooterSPort = 3;
+    public static final int k_hoodPort = 1;
     public static final double shooterRevSpeed = 0;
-    public static final double hoodSpeed = 0.1;
-	public static final int shooterEncoderA = 1;
-    public static final int shooterEncoderB = 2;
+	public static final int shooterEncoderA = 4;
+	public static final int shooterEncoderB = 3;
+	
+    public static final double hoodSpeed = 0.6;
+	public static final double hoodMoveTime = 0.3;
     
 	public static final int PDP_hoodChannel = 0;
 

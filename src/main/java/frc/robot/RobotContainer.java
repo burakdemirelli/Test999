@@ -7,12 +7,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.AutoAimCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.HoodToggleCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,17 +37,19 @@ public class RobotContainer {
 
   public final static DriveTrainSubsystem m_DriveTrain = new DriveTrainSubsystem();
 
+  private final PigeonIMU turretGyro = new PigeonIMU(0);
+
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
 
-  private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+  // private final VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
 
-  private final AutoAimCommand m_VisionCommand = new AutoAimCommand();
-
-  private final TurretSubsystem m_TurretSubsystem = new TurretSubsystem();
+  private final TurretSubsystem m_TurretSubsystem;
 
   private final StorageSubsystem m_StorageSubsystem = new StorageSubsystem();
 
   private final FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
+
+  private final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
 
   private static Joystick operator = new Joystick(Constants.m_Joystick1);
 
@@ -53,6 +59,9 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+
+    m_TurretSubsystem = new TurretSubsystem(turretGyro);
+
     configureButtonBindings();
   }
 
@@ -84,6 +93,10 @@ public class RobotContainer {
          m_TurretSubsystem)
     );
   
+    new JoystickButton(operator, 7)
+      .whenPressed(new HoodToggleCommand(m_ShooterSubsystem));
+
+
   
   
 
