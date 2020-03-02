@@ -80,6 +80,12 @@ public class TurretSubsystem extends SubsystemBase {
      }
   }
 
+  public void turnToTarget() {
+    // try to face towards the target-ish
+    double angle = 90 - getBodyAngle();
+    turnToAngle(angle);
+  }
+
   public void goHome() {
     // turnToAngle(home);
     this.setLimitless(0);
