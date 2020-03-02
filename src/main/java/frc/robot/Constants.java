@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DigitalSource;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -63,12 +61,10 @@ public final class Constants {
 //         public static final double m_thirdColorYellow = 0.113;
 
 //Vision
-	public static final int first_Height = 187;
-	public static final int second_Height = 41;
-	public static final double height_Cam = 5;
-	public static final double angle_cam = 19.0;
-	public static final double angle_Pitch = 0;
-	public static final double angle_Total = 0;
+	public static final double height_Target = 249.55;
+	public static final double height_Cam = 69.5;
+    // angle_cam = Math.toDegrees(Math.atan((- height_Cam + height_Target) / distance_Target)) - pitch;
+	public static final double angle_cam = 14.117653850117721;
 
 //Turret
 	public static final int k_turretPort = 0;

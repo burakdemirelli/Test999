@@ -25,6 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private WPI_TalonSRX shooterMaster = new WPI_TalonSRX(Constants.k_shooterMPort);
   private WPI_VictorSPX shooterSlave = new WPI_VictorSPX(Constants.k_shooterSPort);
   private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
+  
   private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB));
 
   private boolean hoodRaised = true;
@@ -37,6 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
+  // TODO: add pid system to ensure staying at this speed
   public void setShooter(double speed) {
     shooterMaster.set(speed);
   }
@@ -94,12 +96,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     super();
     shooterSlave.follow(shooterMaster);
-    
-
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public static double getRevSpeed() {
+    return Constants.shooterRevSpeed;
   }
 }
