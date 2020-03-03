@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 
@@ -123,13 +125,12 @@ public class AutoAimCommand extends CommandBase {
   public double getDistanceToTarget(double pitch) {
     double distance = (targetHeight-cameraHeight) /   Math.tan(Math.toRadians(pitch + initialAngle));
     System.out.println(distance);
-
     return distance;
-
   }
 
   //#endregion
 
+  
 
   //#region solving for things
 

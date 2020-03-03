@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HoodToggleCommand;
+import frc.robot.commands.IntakeJamRoutine;
+import frc.robot.commands.ShooterSetSpeedPIDF;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -95,7 +97,7 @@ public class RobotContainer {
       new RunCommand (
         () -> {
           double move = operator.getRawAxis(4);
-          System.out.println(move);
+          //System.out.println(move);
           if (Math.abs(move) > 0.1) {
             m_TurretSubsystem.set(move);
           } else {
@@ -104,6 +106,12 @@ public class RobotContainer {
         },
        m_TurretSubsystem
       )
+    );
+
+    m_ShooterSubsystem.setDefaultCommand(
+      new RunCommand(() -> m_ShooterSubsystem.setShooterVoltage(
+          operator.getRawAxis(1)*12 * 0.75
+      ), m_ShooterSubsystem)
     );
   
   
@@ -127,8 +135,21 @@ public class RobotContainer {
     new JoystickButton(operator, 2)
       .whileHeld(new InstantCommand(m_FeederSubsystem:: feederOut, m_FeederSubsystem))
       .whenReleased(new InstantCommand(m_FeederSubsystem::stopEverything, m_FeederSubsystem));
+    
+    new JoystickButton(operator, 3)
+      .whileHeld(new IntakeJamRoutine(m_IntakeSubsystem));
 
+    new JoystickButton(driver, 1)
+        .toggleWhenPressed(new ShooterSetSpeedPIDF(10650, m_ShooterSubsystem, false));
 
+    new JoystickButton(driver, 2)
+        .toggleWhenPressed(new ShooterSetSpeedPIDF(11150, m_ShooterSubsystem, false));
+        
+    new JoystickButton(driver, 3)
+        .toggleWhenPressed(new ShooterSetSpeedPIDF(12000, m_ShooterSubsystem, false));
+    
+    new JoystickButton(driver, 4)
+        .toggleWhenPressed(new ShooterSetSpeedPIDF(11750, m_ShooterSubsystem, false));
     
   }
 
