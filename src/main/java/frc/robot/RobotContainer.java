@@ -7,25 +7,23 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.commands.AutoAimCommand;
-import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.StorageSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.HoodToggleCommand;
-import frc.robot.commands.IntakeJamRoutine;
-import frc.robot.commands.ShooterSetSpeedPIDF;
+import edu.wpi.first.wpilibj.controller.*;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.*;
+import frc.robot.subsystems.*;
+import frc.robot.commands.*;
+
+import frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.geometry.*;
+import edu.wpi.first.wpilibj.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -158,10 +156,72 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  /*
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+
+    MecanumDriveKinematics kinematics = new MecanumDriveKinematics(
+      new Translation2d(-Constants.drivebaseWidth/2, Constants.drivebaseLength/2),  // front  left
+      new Translation2d(Constants.drivebaseWidth/2, Constants.drivebaseLength/2),   // front  right
+      new Translation2d(-Constants.drivebaseWidth/2, -Constants.drivebaseLength/2), // rear   left
+      new Translation2d(Constants.drivebaseWidth/2, -Constants.drivebaseLength/2)); // rear   right
+
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+      DriveMotors.ffS,
+      DriveMotors.ffV,
+      DriveMotors.ffA
+    );
+                                                                  
+
+    // Create config for trajectory
+    TrajectoryConfig config =
+      new TrajectoryConfig(Autonomous.kMaxSpeedMetersPerSecond,
+                            Autonomous.kMaxAccelerationMetersPerSecondSquared)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(kinematics);
+
+    // An example trajectory to follow.  All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(
+          // TODO: generate list of waypoints for each starting position
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        config
+    );
+
+    MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(
+        exampleTrajectory,
+        bodyGyro::getPose, // TODO: this should be the function that returns the current pose of the robot
+
+        feedforward,
+        kinematics,
+        
+        //Position contollers
+        new PIDController(Autonomous.kPXController, 0, 0),
+        new PIDController(Autonomous.kPYController, 0, 0),
+        new ProfiledPIDController(Autonomous.kPThetaController, 0, 0,
+        Autonomous.kThetaControllerConstraints),
+
+        //Needed for normalizing wheel speeds
+        Autonomous.kMaxSpeedMetersPerSecond,
+
+        //Velocity PID's
+        new PIDController(Constants.kPFrontLeftVel, 0, 0),
+        new PIDController(Constants.kPRearLeftVel, 0, 0),
+        new PIDController(Constants.kPFrontRightVel, 0, 0),
+        new PIDController(Constants.kPRearRightVel, 0, 0),
+
+        m_DriveTrain::getCurrentWheelSpeeds,
+
+        m_DriveTrain::setDriveSpeedControllersVolts, //Consumer for the output motor voltages
+
+        m_DriveTrain
+    );
+
+    // Run path following command, then stop at the end.
+    return mecanumControllerCommand.andThen(m_DriveTrain::stop);
   }
-  */
+
 }

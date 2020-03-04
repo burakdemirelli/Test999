@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -115,10 +117,65 @@ public final class Constants {
 	//167
 	public static final double shooterkD = 0;
 	public static final double shooterkI = 1.35e-7;
+	public static final int drivebaseWidth = 0;
+	public static final int drivebaseLength = 0;
+	public static final double kPFrontLeftVel = 0;
+	public static final double kPRearLeftVel = 0;
+	public static final double kPFrontRightVel = 0;
+	public static final double kPRearRightVel = 0;
 	public static double shooterkP = 5.0e-5 * 0.9;
 	//63
 	//public static double shooterkP = 0.0012;
 
-	
 
+
+	// TODO: !!!!!!!!!!!! fill these in
+	public static final class Autonomous {
+		public static final double kMaxSpeedMetersPerSecond = 0;
+		public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+		public static final double kMaxAngularSpeedRadiansPerSecond = 0;
+		public static final double kMaxAngularSpeedRadiansPerSecondSquared = 0;
+	
+		public static final double kPXController = 0;
+		public static final double kPYController = 0;
+		public static final double kPThetaController = 0;
+	
+		//Constraint for the motion profiled robot angle controller
+		public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+			new TrapezoidProfile.Constraints(kMaxAngularSpeedRadiansPerSecond,
+			kMaxAngularSpeedRadiansPerSecondSquared);
+	
+	}
+
+
+	// TODO: rename to DriveSystem because encoders are also in here
+	public static final class DriveMotors {
+
+
+		// encoders for the motors
+		public static final int frontLeftEncoderA = 0;
+		public static final int frontLeftEncoderB = 0;
+
+		public static final int rearLeftEncoderA = 0;
+		public static final int rearLeftEncoderB = 0;
+
+		public static final int frontRightEncoderA = 0;
+		public static final int frontRightEncoderB = 0;
+
+		public static final int rearRightEncoderA = 0;
+		public static final int rearRightEncoderB = 0;
+
+
+		// values for drive motor feedforward
+		public static final double ffS = 0;
+		public static final double ffV = 0;
+		public static final double ffA = 0;
+		
+		// values for motor PID's
+		public static final double kPFrontLeftVel = 0;
+		public static final double kPRearLeftVel = 0;
+		public static final double kPFrontRightVel = 0;
+		public static final double kPRearRightVel = 0;
+
+	}
 }
