@@ -77,12 +77,12 @@ public final class Constants {
 	public static final int k_feederPort = 3;
 	public static final int k_feederBoostPort = 2;
 
-	public static final double storageSpeed = 0.3;
+	public static final double storageSpeed = 0.65;
 	public static final double feederSpeed = -0.8;
-	public static final double feederBoostSpeed = 0.6;
+	public static final double feederBoostSpeed = 0.45;
 	public static final double storageSpeed2 = -0.9;
 	public static final double feederSpeed2 = 0.8;
-	public static final double feederBoostSpeed2 = -0.6;
+	public static final double feederBoostSpeed2 = -0.45;
 	
     
     // Shooter
@@ -101,24 +101,24 @@ public final class Constants {
 	public static final double autoAimI = 0;
 	public static final double autoAimD = 0;
 
-	/*
-	public static final double shooterkS = 0.103;
-	public static final double shooterkV = 0.0125;
-	public static final double shooterkA = 0.000256;
+
+	public static final double shooterkS = -0.172;
+	public static final double shooterkV = 0.000207;
+	public static final double shooterkA = 3.66e-6;
 	public static final double shooterkD = 0;
 	public static final double shooterkI = 0;
-	public static double shooterkP = 0.0079;
-*/
+	public static double shooterkP = 3.19e-127;
+/*
 	public static final double shooterkS = 0.775;
-	public static final double shooterkV = 0.000615;
+	public static final double shooterkV = 0.000615;	
 	public static final double shooterkA = 6.18e-6;
 	//167
 	public static final double shooterkD = 0;
 	public static final double shooterkI = 1.35e-7;
-	public static double shooterkP = 5.0e-5 * 0.9;
+	public static double shooterkP = 5.0e-5 * 0.83589;
 	//63
 	//public static double shooterkP = 0.0012;
-
+*/
 	
 
 }

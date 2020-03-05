@@ -18,12 +18,13 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void feederIn() {
     feeder.set(Constants.feederSpeed2);
-    //feederBoost.set(Constants.feederBoostSpeed2);
+    
+    feederBoost.set(Constants.feederBoostSpeed2);
   }
 
   public void feederOut() {
     feeder.set(Constants.feederSpeed);
-    //feederBoost.set(Constants.feederBoostSpeed);
+    feederBoost.set(Constants.feederBoostSpeed);
 
 
   }

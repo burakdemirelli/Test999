@@ -63,9 +63,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
 
-    double initAngle = bodyGyro.getAngle();
+    bodyGyro.zeroYaw();
+    turretGyro.setYaw(0.0);
 
-    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, initAngle);
+    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro);
 
 
     configureButtonBindings();

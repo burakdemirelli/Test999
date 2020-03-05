@@ -130,15 +130,13 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMaster.setInverted(true);
     shooterSlave.setInverted(true);
     shooterSlave.follow(shooterMaster);
-    shooterEncoder.setSamplesToAverage(5);
-
+    shooterEncoder.setSamplesToAverage(50);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("shooter RPM", Math.floor(getRPM()));
-    SmartDashboard.putNumber("shooter Voltage", shooterMaster.getBusVoltage());
     SmartDashboard.putNumber("distance", getDistanceToTarget(getPitch()));
   }
 

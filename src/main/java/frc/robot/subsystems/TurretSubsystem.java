@@ -33,15 +33,14 @@ public class TurretSubsystem extends SubsystemBase {
   private AHRS bodyGyro;
   private double initAngle;
 
-  private final double home = -90;
+  private final double home = 0;
   
-  private final double[] edges = {-100, 45};
+  private final double[] edges = {-190, 135};
 
-  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro, double initAngle){
+  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro){
     turretGyro = gyro;
     turretGyro.setYaw(home);
 
-    this.initAngle = initAngle;
     this.bodyGyro = bodyGyro;
     turretPID.setTolerance(2,4);
 
@@ -54,6 +53,9 @@ public class TurretSubsystem extends SubsystemBase {
     else setLimitless(0);
   }
 
+  // public void bodyGyrReset(){
+  //   bodyGyro.reset();
+  // }
 
   private double[] distancesToEdges() {
     double loc = getRelativeAngle();
@@ -93,11 +95,12 @@ public class TurretSubsystem extends SubsystemBase {
   
 
   public double getRelativeAngle() {
+
     return getGyroAngle() - getBodyAngle();
   }
 
   public double getBodyAngle(){
-    return bodyGyro.getAngle() - initAngle;
+    return bodyGyro.getAngle();
   }
 
   public double getGyroAngle() {
@@ -118,6 +121,11 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println("gyro relative:" + getRelativeAngle());
+    System.out.println("gyro turret:" + getGyroAngle());
+    System.out.println("gyro body:" + bodyGyro.getAngle());
+    SmartDashboard.putNumber("relative gyro", getRelativeAngle());
+    SmartDashboard.putNumber("body gyro", bodyGyro.getAngle());
     // things that will every time the scheduler runs
   }
 }
