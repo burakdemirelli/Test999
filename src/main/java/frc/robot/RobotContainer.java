@@ -12,8 +12,12 @@ import java.util.List;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
@@ -34,11 +38,11 @@ import edu.wpi.first.wpilibj.trajectory.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  
+  private AHRS bodyGyro = new AHRS();
+  private PigeonIMU turretGyro = new PigeonIMU(0);
 
-  public final static DriveTrainSubsystem m_DriveTrain = new DriveTrainSubsystem();
-
-  private final PigeonIMU turretGyro = new PigeonIMU(0);
-  private final AHRS bodyGyro = new AHRS();
+  public final DriveTrainSubsystem m_DriveTrain;
 
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
 
@@ -50,23 +54,47 @@ public class RobotContainer {
 
   private final FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
 
-  private final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
+  private final ShooterSubsystem m_ShooterSubsystem;
+
+  //private final resetTurretHome c_resetTurret;
+
+  private final LED m_LEDSubsystem = new LED();
 
   private static Joystick operator = new Joystick(Constants.m_Joystick1);
 
   private static Joystick driver = new Joystick(Constants.m_Joystick2);
+
+  
+  public NetworkTableInstance table = NetworkTableInstance.getDefault();
+  public NetworkTable camTable = table.getTable("chameleon-vision").getSubTable("Microsoft LifeCam HD-3000");
+  
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-
     bodyGyro.zeroYaw();
-    turretGyro.setYaw(0.0);
+    turretGyro.setYaw(0);
+    double initAngle = bodyGyro.getAngle();
 
-    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro);
+    m_ShooterSubsystem = new ShooterSubsystem(camTable);
+    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, initAngle, camTable);
+    m_DriveTrain = new DriveTrainSubsystem(bodyGyro);
 
+    // c_AutoAimCommand = new AutoAimCommand(m_ShooterSubsystem, m_TurretSubsystem);
+    // c_resetTurret = new resetTurretHome(m_ShooterSubsystem, m_TurretSubsystem);
 
+    /*
+    (new RunCommand(() -> {
+      
+      m_LEDSubsystem.turnOnLED();
+    }, m_LEDSubsystem) {
+      @Override
+      public void end(boolean i) {
+        m_LEDSubsystem.turnOffLED();
+      }
+    }).schedule();
+*/
     configureButtonBindings();
   }
 
@@ -79,10 +107,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
   // Drivetrain
   m_DriveTrain.setDefaultCommand(
-    new RunCommand ( () -> m_DriveTrain.mecanumSet(
+    new RunCommand ( () -> m_DriveTrain.driveMecanum(
       driver.getRawAxis(Constants.m_YPort), 
       driver.getRawAxis(Constants.m_XPort), 
-      driver.getRawAxis(Constants.m_ZPort)), 
+      driver.getRawAxis(Constants.m_ZPort)),
       m_DriveTrain));
 
   //Intake
@@ -112,6 +140,11 @@ public class RobotContainer {
           operator.getRawAxis(1)*12 * 0.75
       ), m_ShooterSubsystem)
     );
+
+
+    new JoystickButton(driver, 7)
+        .whileHeld(new AutoAimButBad(m_TurretSubsystem, m_ShooterSubsystem)
+        );
   
   
   
@@ -139,16 +172,16 @@ public class RobotContainer {
       .whileHeld(new IntakeJamRoutine(m_IntakeSubsystem));
 
     new JoystickButton(driver, 1)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(10650, m_ShooterSubsystem, false));
+        .whenPressed(new InstantCommand(m_LEDSubsystem::turnOffLED, m_LEDSubsystem));
 
     new JoystickButton(driver, 2)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(11150, m_ShooterSubsystem, false));
-        
-    new JoystickButton(driver, 3)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(12000, m_ShooterSubsystem, false));
+        .whenPressed(new InstantCommand(m_LEDSubsystem::turnOnLED, m_LEDSubsystem));
     
-    new JoystickButton(driver, 4)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(11750, m_ShooterSubsystem, false));
+    new JoystickButton(driver, Constants.j_autoAim)
+        .whileHeld(new InstantCommand(m_TurretSubsystem::turretAuto,m_TurretSubsystem));
+        //.whenReleased(c_resetTurret);
+
+    //new POVButton(operator, ) 
     
   }
 
@@ -158,71 +191,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
-    MecanumDriveKinematics kinematics = new MecanumDriveKinematics(
-      new Translation2d(-Constants.drivebaseWidth/2, Constants.drivebaseLength/2),  // front  left
-      new Translation2d(Constants.drivebaseWidth/2, Constants.drivebaseLength/2),   // front  right
-      new Translation2d(-Constants.drivebaseWidth/2, -Constants.drivebaseLength/2), // rear   left
-      new Translation2d(Constants.drivebaseWidth/2, -Constants.drivebaseLength/2)); // rear   right
-
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
-      DriveMotors.ffS,
-      DriveMotors.ffV,
-      DriveMotors.ffA
-    );
-                                                                  
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-      new TrajectoryConfig(Autonomous.kMaxSpeedMetersPerSecond,
-                            Autonomous.kMaxAccelerationMetersPerSecondSquared)
-          // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(kinematics);
-
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-          // TODO: generate list of waypoints for each starting position
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config
-    );
-
-    MecanumControllerCommand mecanumControllerCommand = new MecanumControllerCommand(
-        exampleTrajectory,
-        bodyGyro::getPose, // TODO: this should be the function that returns the current pose of the robot
-
-        feedforward,
-        kinematics,
-        
-        //Position contollers
-        new PIDController(Autonomous.kPXController, 0, 0),
-        new PIDController(Autonomous.kPYController, 0, 0),
-        new ProfiledPIDController(Autonomous.kPThetaController, 0, 0,
-        Autonomous.kThetaControllerConstraints),
-
-        //Needed for normalizing wheel speeds
-        Autonomous.kMaxSpeedMetersPerSecond,
-
-        //Velocity PID's
-        new PIDController(Constants.kPFrontLeftVel, 0, 0),
-        new PIDController(Constants.kPRearLeftVel, 0, 0),
-        new PIDController(Constants.kPFrontRightVel, 0, 0),
-        new PIDController(Constants.kPRearRightVel, 0, 0),
-
-        m_DriveTrain::getCurrentWheelSpeeds,
-
-        m_DriveTrain::setDriveSpeedControllersVolts, //Consumer for the output motor voltages
-
-        m_DriveTrain
-    );
-
-    // Run path following command, then stop at the end.
-    return mecanumControllerCommand.andThen(m_DriveTrain::stop);
+    /* 
+    return new AutonomousDrive(
+      m_DriveTrain,
+      m_IntakeSubsystem, 
+      AutonomousDrive.StartingPosition.RED_FAR_RIGHT
+      );*/
+      double start = Timer.getFPGATimestamp();
+      return new RunCommand(() -> {
+        if(Timer.getFPGATimestamp() - start  < 0.55 ) m_DriveTrain.driveMecanum(0, 0.32, 0); 
+      }, m_DriveTrain);
   }
 
 }

@@ -8,9 +8,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,50 +28,125 @@ public class DriveTrainSubsystem extends SubsystemBase {
   public WPI_TalonSRX rearRightMotor = new WPI_TalonSRX(Constants.rearRightMotor_4);
 
 
+  private AHRS bodyGyro; 
+
+/*
   private Encoder frontLeftEncoder = new Encoder(DriveMotors.frontLeftEncoderA, DriveMotors.frontLeftEncoderB);
   private Encoder rearLeftEncoder = new Encoder(DriveMotors.rearLeftEncoderA, DriveMotors.rearLeftEncoderB);
   private Encoder frontRightEncoder = new Encoder(DriveMotors.frontRightEncoderA, DriveMotors.frontRightEncoderB);
   private Encoder rearRightEncoder = new Encoder(DriveMotors.rearRightEncoderA, DriveMotors.rearRightEncoderB);
+*/
 
-  public MecanumDrive drive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
+  public MecanumDrive mecanumDrive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
+ // public MecanumDrive drive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
+ // public double MecanumSpeedLimiting = Constants.speedLimiting;
 
-  public double MecanumSpeedLimiting = Constants.speedLimiting;
 
-  public void mecanumSet(double y, double x, double z) {
+  private DifferentialDriveOdometry m_odometry;
+
+
+ /*  public void mecanumSet(double y, double x, double z) {
     drive.driveCartesian(y * MecanumSpeedLimiting, x * MecanumSpeedLimiting, z * MecanumSpeedLimiting);
+  } */
+  
+  public void driveMecanum(double x, double z, double rot){
+      mecanumDrive.driveCartesian(x, z, rot);}
+
+
+  public void stop() {
+    mecanumDrive.driveCartesian(0,0,0);
   }
 
-
-  public MecanumDriveWheelSpeeds getCurrentWheelSpeeds() {
-    return new MecanumDriveWheelSpeeds(
-      frontLeftEncoder.getRate(),
-      rearLeftEncoder.getRate(),
-      frontRightEncoder.getRate(),
-      rearRightEncoder.getRate()
-    );
-  }
-
-  public void setVoltage(MecanumDriveMotorVoltages voltages) {
-    frontLeftMotor.setVoltage(voltages.frontLeftVoltage);
-    rearLeftMotor.setVoltage(voltages.rearLeftVoltage);
-    frontRightMotor.setVoltage(voltages.frontRightVoltage);
-    rearRightMotor.setVoltage(voltages.rearRightVoltage);
+  
+  public Pose2d getPose(){
+    return m_odometry.getPoseMeters();
   }
   
-  public void stop() {
-    drive.driveCartesian(0, 0, 0);
+  public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+    return new DifferentialDriveWheelSpeeds(getLeftDistance(), getRightDistance());
+  }
+
+  public void resetOdometry(Pose2d pose){
+    resetEncoders();
+    zeroHeading();
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+  }
+
+  /*public void arcadeDrive(double fwd, double rot){
+    driveDifferential.arcadeDrive(fwd, rot);
+  }*/
+
+  /*
+  public void tankDriveVolts(double leftVolts, double rightVolts){
+    frontLeftMotor.setVoltage(leftVolts);
+    frontRightMotor.setVoltage(-rightVolts);
+    driveDifferential.feed();
+  }
+  */
+  
+  
+  public void resetEncoders(){
+    frontRightMotor.setSelectedSensorPosition(0);
+    frontLeftMotor.setSelectedSensorPosition(0);
+    rearLeftMotor.setSelectedSensorPosition(0);
+    rearRightMotor.setSelectedSensorPosition(0);
+    
+  }
+
+  public double getAverageEncoderDistance(){
+    return (getLeftDistance() + getRightDistance())/2.0;
+  }
+
+  public double getLeftDistance(){
+
+    return ( 
+          (-((frontLeftMotor.getSelectedSensorPosition()/4096.0)*(2*Math.PI*(3*2.54)))/100.0) +
+          (-((rearLeftMotor.getSelectedSensorPosition()/4096.0)*(2*Math.PI*(3*2.54)))/100.0)
+          ) /2.0;
+  }
+
+  public double getRightDistance(){
+    return ( 
+          (((frontRightMotor.getSelectedSensorPosition()/4096.0)*(2*Math.PI*(3*2.54)))/100.0) +
+          (((rearRightMotor.getSelectedSensorPosition()/4096.0)*(2*Math.PI*(3*2.54)))/100.0)
+          ) /2.0;  
+  }
+
+  /*
+  public void setMaxOutput(double maxOutput){ 
+    driveDifferential.setMaxOutput(maxOutput);
+  }
+  */
+
+  public void zeroHeading(){
+    //m_gyro.setYaw(0);
+    System.out.println("gyroresetINIT");
+    bodyGyro.zeroYaw();
+    System.out.println("gyroreset");
+  }
+  
+
+  public double getHeading() {
+    //return Math.IEEEremainder(ypr[0], 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return Math.IEEEremainder(bodyGyro.getAngle(), 360) * (DriveMotors.kGyroReversed ? -1.0 : 1.0);
   }
 
 
   /**
    * Creates a new DrivetrainSubsystem.
    */
-  public DriveTrainSubsystem() {
+  public DriveTrainSubsystem(AHRS gyro) {
     // TODO: calibrate and reset encoders
+    this.bodyGyro = gyro;
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+ 
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic() {  
   }
+
+
+
+
 }

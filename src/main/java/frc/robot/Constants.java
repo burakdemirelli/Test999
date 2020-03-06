@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 /**
@@ -24,7 +25,9 @@ public final class Constants {
     public static final int m_Joystick2 = 0;
     public static final int m_YPort = 0;
     public static final int m_XPort = 1;
-    public static final int m_ZPort = 2;
+	public static final int m_ZPort = 2;
+	public static final int j_autoAim = 3;
+	
     //public int m_turretPort = 0;
 	
 // Drivetrain
@@ -64,18 +67,19 @@ public final class Constants {
 
 //Vision
 	public static final double height_Target = 249.55;
-	public static final double height_Cam = 69.5;
+	//public static final double height_Target = 2.75;
+	public static final double height_Cam = .668;
     // angle_cam = Math.toDegrees(Math.atan((- height_Cam + height_Target) / distance_Target)) - pitch;
-	public static final double angle_cam = 14.117653850117721;
+	public static final double angle_cam = 26.015784307789657443617472017916;
 
 //Turret
-	public static final int k_turretPort = 0;
-	public static final int kP = 0;
-	public static final int kI = 0;
-	public static final int kD = 0;
+	public static  int k_turretPort = 0;
+	public static  double turretkP = 0.030;
+	public static  double turretkI = 0;
+	public static  double turretkD = 0;
 
 // Storage
-	public static final int k_storagePort = 0;
+	public static final int k_storagePort = 2;
 	public static final int k_feederPort = 3;
 	public static final int k_feederBoostPort = 2;
 
@@ -104,28 +108,28 @@ public final class Constants {
 	public static final double autoAimD = 0;
 
 
-	public static final double shooterkS = -0.172;
-	public static final double shooterkV = 0.000207;
-	public static final double shooterkA = 3.66e-6;
+	/*
+	public static final double shooterkS = 0.103;
+	public static final double shooterkV = 0.0125;
+	public static final double shooterkA = 0.000256;
 	public static final double shooterkD = 0;
 	public static final double shooterkI = 0;
-	public static double shooterkP = 3.19e-127;
-/*
-	public static final double shooterkS = 0.775;
-	public static final double shooterkV = 0.000615;	
-	public static final double shooterkA = 6.18e-6;
-	//167
-	public static final double shooterkD = 0;
-	public static final double shooterkI = 1.35e-7;
+	public static double shooterkP = 0.0079;
 */
-
+	public static final double shooterkS = 0.832 ;
+	public static final double shooterkV = 0.00059179;
+	public static final double shooterkA = 0.000189;
+	//167
+	// public static final double shooterkP = 6.15e-12;
+	public static final double shooterkI = 1.35e-7;
+	public static final double shooterkP =  9.15e-12;
+	public static final double shooterkD = 0;
 	public static final int drivebaseWidth = 0;
 	public static final int drivebaseLength = 0;
 	public static final double kPFrontLeftVel = 0;
 	public static final double kPRearLeftVel = 0;
 	public static final double kPFrontRightVel = 0;
 	public static final double kPRearRightVel = 0;
-	public static double shooterkP = 5.0e-5 * 0.9;
 	//63
 	//public static double shooterkP = 0.0012;
 
@@ -146,6 +150,8 @@ public final class Constants {
 		public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
 			new TrapezoidProfile.Constraints(kMaxAngularSpeedRadiansPerSecond,
 			kMaxAngularSpeedRadiansPerSecondSquared);
+		public static final double kRamseteB = 0;
+		public static final double kRamseteZeta = 0;
 	
 	}
 
@@ -153,31 +159,31 @@ public final class Constants {
 	// TODO: rename to DriveSystem because encoders are also in here
 	public static final class DriveMotors {
 
+		public static final boolean kGyroReversed = false;
+		public static final double ksVolts = 0;
+		public static final double kvVoltSecondsPerMeter = 0;
+		public static final double kaVoltSecondsSquaredPerMeter = 0;
 
-		// encoders for the motors
-		public static final int frontLeftEncoderA = 0;
-		public static final int frontLeftEncoderB = 0;
-
-		public static final int rearLeftEncoderA = 0;
-		public static final int rearLeftEncoderB = 0;
-
-		public static final int frontRightEncoderA = 0;
-		public static final int frontRightEncoderB = 0;
-
-		public static final int rearRightEncoderA = 0;
-		public static final int rearRightEncoderB = 0;
+		public static final double kTrackwidthMeters = .65;
+		public static final DifferentialDriveKinematics kDriveKinematics =
+        	new DifferentialDriveKinematics(kTrackwidthMeters);
+		public static final double kPDriveVel = 0;
 
 
-		// values for drive motor feedforward
-		public static final double ffS = 0;
-		public static final double ffV = 0;
-		public static final double ffA = 0;
-		
-		// values for motor PID's
-		public static final double kPFrontLeftVel = 0;
-		public static final double kPRearLeftVel = 0;
-		public static final double kPFrontRightVel = 0;
-		public static final double kPRearRightVel = 0;
+
 
 	}
+
+	public static class AutoShooterParameters{
+		public static double targetShooterRPM;
+		public static double turretAngle;
+		public static String targetHoodPosition;
+		public static double hoodMoveStartTime;
+		
+		public static boolean shootReady;
+		public static boolean foundTarget;
+	}
+
+
+	public static double initRelativeAngle = 0.0;
 }

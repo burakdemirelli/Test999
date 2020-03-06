@@ -7,44 +7,26 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
-public class StorageSubsystem extends SubsystemBase {
-
-  private WPI_VictorSPX storage = new WPI_VictorSPX(Constants.k_storagePort);
- 
-  public void storageIn() {
-    storage.set(Constants.storageSpeed);
-    
-  }
-  public void storageOut(){
-    storage.set(Constants.storageSpeed2);
-  }
-
-  public void stopEverything() {
-    storage.set(0);
-
-  }
-
-  public void runStorage() {
-    storage.set(Constants.storageSpeed);
-  }
-
-  public void stopStorage() {
-    storage.set(0);
-  }
-
+public class LED extends SubsystemBase {
   /**
-   * Creates a new StorageSubsystem.
+   * Creates a new LED.
    */
-  public StorageSubsystem() {
+  private Solenoid visionLED = new Solenoid(4);
+  public LED() {
 
   }
 
+
+  public void turnOnLED(){
+    visionLED.set(true);
+  }
+
+  public void turnOffLED(){
+    visionLED.set(false);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

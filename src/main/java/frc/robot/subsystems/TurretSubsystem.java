@@ -24,9 +24,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final WPI_VictorSPX turret = new WPI_VictorSPX(Constants.k_turretPort);
 
-  private final double kP = -Constants.kP;
-  private final double kI = Constants.kI;
-  private final double kD = Constants.kD;
+  private final double kP = Constants.turretkP;
+  private final double kI = Constants.turretkI;
+  private final double kD = Constants.turretkD;
 
   private final PIDController turretPID = new PIDController(kP, kI, kD);
   private final PigeonIMU turretGyro;
@@ -35,10 +35,15 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final double home = 0;
   
-  private final double[] edges = {-190, 135};
+  private final double[] edges = {-90, 120};
 
-  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro){
+  public NetworkTable camTable;
+
+
+  public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro, double initAngle, NetworkTable camTable){
     turretGyro = gyro;
+    this.camTable = camTable;
+
     turretGyro.setYaw(home);
 
     this.bodyGyro = bodyGyro;
@@ -69,10 +74,21 @@ public class TurretSubsystem extends SubsystemBase {
     turret.set(speed);
   }
 
+  public double getYaw() {
+    double yaw =camTable.getEntry("targetYaw").getDouble(Double.NaN); 
+    System.out.println("yaw: " + yaw);
+    return yaw;
+  }
+
+
+  public void turretAuto(){
+    set(getYaw()*-0.018);
+  }
+
   public void turnToAngle(double angle) {
     angle = clamp(angle);
      if (turretPID.atSetpoint() != true) {
-       turret.set(
+       set(
          MathUtil.clamp(
            turretPID.calculate(getRelativeAngle(), angle) - 0.6,
            0.6, 
@@ -100,7 +116,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double getBodyAngle(){
-    return bodyGyro.getAngle();
+    return -bodyGyro.getAngle() - initAngle;
   }
 
   public double getGyroAngle() {
@@ -127,6 +143,14 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("relative gyro", getRelativeAngle());
     SmartDashboard.putNumber("body gyro", bodyGyro.getAngle());
     // things that will every time the scheduler runs
+    SmartDashboard.putNumber("body angle", getBodyAngle());
+    SmartDashboard.putNumber("turret angle", getGyroAngle());
+    SmartDashboard.putNumber("relative angle", getRelativeAngle());
+    //SmartDashboard.putData(Constants.turretkP);
+    //SmartDashboard.putData(Constants.turretkI);
+    //
+    //SmartDashboard.putData(Constants.turretkD);
+;
   }
 }
  

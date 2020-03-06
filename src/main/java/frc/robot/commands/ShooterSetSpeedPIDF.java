@@ -30,7 +30,7 @@ public class ShooterSetSpeedPIDF extends PIDCommand {
 
   private boolean isInterruptable;
 
-  public ShooterSetSpeedPIDF(double RPM, ShooterSubsystem shooterSubsystem, boolean isInterruptable){ 
+  public ShooterSetSpeedPIDF(double RPM, ShooterSubsystem shooterSubsystem, boolean isInterruptable) { 
     super(
         // The controller that the command will use
         new PIDController(Constants.shooterkP, Constants.shooterkI, Constants.shooterkD),
@@ -43,16 +43,37 @@ public class ShooterSetSpeedPIDF extends PIDCommand {
           // Use the output here
           m_motorOutput = output + m_SimpleMotorFeedforward.calculate(RPM);
           shooterSubsystem.setShooterVoltage(m_motorOutput);
-          System.out.println(output);
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     getController().setTolerance(100);
     m_shooterSubsystem = shooterSubsystem;
     this.isInterruptable = isInterruptable;
-    //addRequirements(m_shooterSubsystem);
-
+    addRequirements(m_shooterSubsystem);
   }
+
+  public ShooterSetSpeedPIDF(ShooterSubsystem shooterSubsystem, boolean isInterruptable) { 
+    super(
+        // The controller that the command will use
+        new PIDController(Constants.shooterkP, Constants.shooterkI, Constants.shooterkD),
+        // This should return the measurement
+        shooterSubsystem::getRPM,
+        // This should return the setpoint (can also be a constant)
+        shooterSubsystem::getRequiredRPM,
+        // This uses the output
+        output -> {
+          // Use the output here
+          m_motorOutput = output + m_SimpleMotorFeedforward.calculate(shooterSubsystem.getRequiredRPM());
+          shooterSubsystem.setShooterVoltage(m_motorOutput);
+        });
+    // Use addRequirements() here to declare subsystem dependencies.
+    // Configure additional PID options by calling `getController` here.
+    getController().setTolerance(100);
+    m_shooterSubsystem = shooterSubsystem;
+    this.isInterruptable = isInterruptable;
+    addRequirements(m_shooterSubsystem);
+  }
+
 
   @Override
   public void initialize() {

@@ -29,18 +29,31 @@ public class ShooterSubsystem extends SubsystemBase {
   private WPI_VictorSPX shooterSlave = new WPI_VictorSPX(Constants.k_shooterSPort);
   private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
   
-  private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB), true, EncodingType.k1X);
+  private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB), true, EncodingType.k4X);
 
+  public NetworkTable camTable;
 
   private boolean hoodRaised = true;
 
+  
+  private double targetShooterSpeed = Constants.AutoShooterParameters.targetShooterRPM;
+  private double targetTurretAngle = Constants.AutoShooterParameters.turretAngle;
+  //private String targetHoodPosition = ShooterSubsystem.in;
+  private String targetHoodPosition = Constants.AutoShooterParameters.targetHoodPosition;
+  private double hoodMoveStartTime = Constants.AutoShooterParameters.hoodMoveStartTime;
+  
+  private boolean foundTarget = Constants.AutoShooterParameters.foundTarget;
+  private boolean shootReady = Constants.AutoShooterParameters.shootReady;
+
 
   //GEÇİCİ
-  private NetworkTableInstance table = NetworkTableInstance.getDefault();
-  private NetworkTable camTable = table.getTable("chameleon-vision").getSubTable("Microsoft LifeCam HD-3000");
   private final double targetHeight = Constants.height_Target;
   private final double cameraHeight = Constants.height_Cam;
   private final double initialAngle = Constants.angle_cam;
+
+  static private double ENCODER_EDGES_PER_REV = 4096 / 4.;
+  double encoderConstant = (1 / ENCODER_EDGES_PER_REV);
+
 
   public double getYaw() {
     return camTable.getEntry("targetYaw").getDouble(Double.NaN);
@@ -55,6 +68,14 @@ public class ShooterSubsystem extends SubsystemBase {
     System.out.println(distance);
     return distance;
   }
+
+
+  public double getRequiredRPM() {
+    double distance = getDistanceToTarget(getPitch());
+    double RPM = 750*Math.log(distance - 310) + 5600;
+    return RPM;
+  }
+
  //GEÇİCİ SON
 
 
@@ -72,7 +93,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getRPM(){
-    return shooterEncoder.getRate()*60/1024.0;
+    return shooterEncoder.getRate() * 60.;
   }
 
   public void setShooterVoltage(double voltage) {
@@ -125,13 +146,30 @@ public class ShooterSubsystem extends SubsystemBase {
   //#endregion
 
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(NetworkTable camTable) {
     super();
+    this.camTable = camTable;
     shooterMaster.setInverted(true);
     shooterSlave.setInverted(true);
     shooterSlave.follow(shooterMaster);
     shooterEncoder.setSamplesToAverage(50);
+    shooterEncoder.setDistancePerPulse(encoderConstant);
+
+
   }
+
+  public void resetAutoAim(){
+    foundTarget = false;
+
+    targetShooterSpeed = 0;
+    targetTurretAngle = 0;
+    targetHoodPosition = ShooterSubsystem.in;
+    hoodMoveStartTime = -1;
+    
+    shootReady = false;
+
+  }
+
 
   @Override
   public void periodic() {
