@@ -33,18 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public NetworkTable camTable;
 
-  private boolean hoodRaised = true;
-
-  
-  private double targetShooterSpeed = Constants.AutoShooterParameters.targetShooterRPM;
-  private double targetTurretAngle = Constants.AutoShooterParameters.turretAngle;
-  //private String targetHoodPosition = ShooterSubsystem.in;
-  private String targetHoodPosition = Constants.AutoShooterParameters.targetHoodPosition;
-  private double hoodMoveStartTime = Constants.AutoShooterParameters.hoodMoveStartTime;
-  
-  private boolean foundTarget = Constants.AutoShooterParameters.foundTarget;
-  private boolean shootReady = Constants.AutoShooterParameters.shootReady;
-
+  private boolean hoodRaised = true;  
 
   //GEÇİCİ
   private final double targetHeight = Constants.height_Target;
@@ -93,13 +82,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //#region Shooter
 
-  public void revShooter() {
-    // standard speed to set shooter to when preparing for a shot
-    shooterMaster.setVoltage(Constants.shooterRevSpeed);
-
-  }
-
-  // TODO: add pid system to ensure staying at this speed
   public void setShooter(double speed) {
     shooterMaster.set(speed);
   }
@@ -119,10 +101,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getShooterSpeed() {
     return shooterEncoder.getRate();
   }
-  
-  public boolean shooterRevved() {
-    return true;
-  }
 
   //#endregion
 
@@ -139,8 +117,6 @@ public class ShooterSubsystem extends SubsystemBase {
     hood.set(speed);
   }
 
-  //ben biraktim indi
-  //                -kaganin annesi
 
   public void stopHood(String finalState) {
       hood.set(0);
@@ -170,19 +146,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
-  public void resetAutoAim(){
-    foundTarget = false;
-
-    targetShooterSpeed = 0;
-    targetTurretAngle = 0;
-    targetHoodPosition = ShooterSubsystem.in;
-    hoodMoveStartTime = -1;
-    
-    shootReady = false;
-
-  }
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -190,7 +153,4 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("distance", getDistanceToTarget(getPitch()));
   }
 
-  public static double getRevSpeed() {
-    return Constants.shooterRevSpeed;
-  }
 }
