@@ -52,10 +52,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void set(double speed) {
-    double[] dists = distancesToEdges();
-    double dist = speed < 0 ? dists[0] : dists[1];
-    if ( dist > threshold) setLimitless(speed);
-    else setLimitless(0);
+    setLimitless(speed);
   }
 
   // public void bodyGyrReset(){
