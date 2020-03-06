@@ -37,8 +37,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private Encoder rearRightEncoder = new Encoder(DriveMotors.rearRightEncoderA, DriveMotors.rearRightEncoderB);
 */
 
-  public DifferentialDrive driveDifferential = new DifferentialDrive(frontLeftMotor, frontRightMotor);
-
+  public MecanumDrive mecanumDrive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
  // public MecanumDrive drive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
  // public double MecanumSpeedLimiting = Constants.speedLimiting;
 
@@ -50,13 +49,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
     drive.driveCartesian(y * MecanumSpeedLimiting, x * MecanumSpeedLimiting, z * MecanumSpeedLimiting);
   } */
   
-  public void driveDifferential(double x, double z){
-    driveDifferential.arcadeDrive(x, z);
-  }
+  public void driveMecanum(double x, double z, double rot){
+      mecanumDrive.driveCartesian(x, z, rot);}
 
 
   public void stop() {
-    driveDifferential.arcadeDrive(0,0);
+    mecanumDrive.driveCartesian(0,0,0);
   }
 
   
@@ -74,16 +72,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
-  public void arcadeDrive(double fwd, double rot){
+  /*public void arcadeDrive(double fwd, double rot){
     driveDifferential.arcadeDrive(fwd, rot);
-  }
+  }*/
 
+  /*
   public void tankDriveVolts(double leftVolts, double rightVolts){
     frontLeftMotor.setVoltage(leftVolts);
     frontRightMotor.setVoltage(-rightVolts);
     driveDifferential.feed();
   }
-
+  */
+  
+  
   public void resetEncoders(){
     frontRightMotor.setSelectedSensorPosition(0);
     frontLeftMotor.setSelectedSensorPosition(0);
@@ -111,9 +112,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
           ) /2.0;  
   }
 
+  /*
   public void setMaxOutput(double maxOutput){ 
     driveDifferential.setMaxOutput(maxOutput);
   }
+  */
 
   public void zeroHeading(){
     //m_gyro.setYaw(0);
@@ -136,17 +139,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
     // TODO: calibrate and reset encoders
     this.bodyGyro = gyro;
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-    rearLeftMotor.follow(frontLeftMotor);
-    rearRightMotor.follow(frontRightMotor);
+ 
   }
 
   @Override
-  public void periodic() {
-    
-    m_odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftDistance(),
-                      getRightDistance());
-  
-              }
+  public void periodic() {  
+  }
 
 
 

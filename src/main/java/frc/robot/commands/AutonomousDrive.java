@@ -115,7 +115,8 @@ public class AutonomousDrive extends ParallelRaceGroup {
         config
     );
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
+
+    RamseteCommand ramseteCommand /*= new RamseteCommand(
         exampleTrajectory,
         m_driveTrain::getPose,
         new RamseteController(Autonomous.kRamseteB, Autonomous.kRamseteZeta),
@@ -129,9 +130,9 @@ public class AutonomousDrive extends ParallelRaceGroup {
         // RamseteCommand passes volts to the callback
         m_driveTrain::tankDriveVolts,
         m_driveTrain
-    );
+    )*/;
 
     // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0));
+    return null/*.andThen(() -> m_driveTrain.tankDriveVolts(0, 0))*/;
   }
 }

@@ -25,7 +25,9 @@ public final class Constants {
     public static final int m_Joystick2 = 0;
     public static final int m_YPort = 0;
     public static final int m_XPort = 1;
-    public static final int m_ZPort = 2;
+	public static final int m_ZPort = 2;
+	public static final int j_autoAim = 3;
+	
     //public int m_turretPort = 0;
 	
 // Drivetrain
@@ -65,15 +67,16 @@ public final class Constants {
 
 //Vision
 	public static final double height_Target = 249.55;
-	public static final double height_Cam = 69.5;
+	//public static final double height_Target = 2.75;
+	public static final double height_Cam = .668;
     // angle_cam = Math.toDegrees(Math.atan((- height_Cam + height_Target) / distance_Target)) - pitch;
-	public static final double angle_cam = 14.117653850117721;
+	public static final double angle_cam = 26.015784307789657443617472017916;
 
 //Turret
-	public static final int k_turretPort = 0;
-	public static final int kP = 0;
-	public static final int kI = 0;
-	public static final int kD = 0;
+	public static  int k_turretPort = 0;
+	public static  double turretkP = 0.030;
+	public static  double turretkI = 0;
+	public static  double turretkD = 0;
 
 // Storage
 	public static final int k_storagePort = 2;
@@ -169,4 +172,17 @@ public final class Constants {
 
 
 	}
+
+	public static class AutoShooterParameters{
+		public static double targetShooterRPM;
+		public static double turretAngle;
+		public static String targetHoodPosition;
+		public static double hoodMoveStartTime;
+		
+		public static boolean shootReady;
+		public static boolean foundTarget;
+	}
+
+
+	public static double initRelativeAngle = 0.0;
 }

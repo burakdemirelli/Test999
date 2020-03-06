@@ -12,9 +12,12 @@ import java.util.List;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
@@ -51,23 +54,37 @@ public class RobotContainer {
 
   private final FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
 
-  private final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
+  private final ShooterSubsystem m_ShooterSubsystem;
+
+  private final AutoAimCommand c_AutoAimCommand;
+
+  //private final resetTurretHome c_resetTurret;
 
   private final LED m_LEDSubsystem = new LED();
 
   private static Joystick operator = new Joystick(Constants.m_Joystick1);
 
   private static Joystick driver = new Joystick(Constants.m_Joystick2);
+
+  
+  public NetworkTableInstance table = NetworkTableInstance.getDefault();
+  public NetworkTable camTable = table.getTable("chameleon-vision").getSubTable("Microsoft LifeCam HD-3000");
+  
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-
+    bodyGyro.zeroYaw();
+    turretGyro.setYaw(0);
     double initAngle = bodyGyro.getAngle();
+    m_ShooterSubsystem = new ShooterSubsystem(camTable);
 
-    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, initAngle);
+    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, initAngle, camTable);
     m_DriveTrain = new DriveTrainSubsystem(bodyGyro);
+    c_AutoAimCommand = new AutoAimCommand(m_ShooterSubsystem, m_TurretSubsystem);
+    //c_resetTurret = new resetTurretHome(m_ShooterSubsystem, m_TurretSubsystem);
+
     /*
     (new RunCommand(() -> {
       
@@ -91,9 +108,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
   // Drivetrain
   m_DriveTrain.setDefaultCommand(
-    new RunCommand ( () -> m_DriveTrain.driveDifferential(
+    new RunCommand ( () -> m_DriveTrain.driveMecanum(
+      driver.getRawAxis(Constants.m_YPort), 
       driver.getRawAxis(Constants.m_XPort), 
-      driver.getRawAxis(Constants.m_YPort)), 
+      driver.getRawAxis(Constants.m_ZPort)),
       m_DriveTrain));
 
   //Intake
@@ -123,6 +141,11 @@ public class RobotContainer {
           operator.getRawAxis(1)*12 * 0.75
       ), m_ShooterSubsystem)
     );
+
+
+    new JoystickButton(driver, 7)
+        .whileHeld(new AutoAimButBad(m_TurretSubsystem, m_ShooterSubsystem)
+        );
   
   
   
@@ -154,12 +177,12 @@ public class RobotContainer {
 
     new JoystickButton(driver, 2)
         .whenPressed(new InstantCommand(m_LEDSubsystem::turnOnLED, m_LEDSubsystem));
-        
-    new JoystickButton(driver, 3)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(8000, m_ShooterSubsystem, false));
     
-    new JoystickButton(driver, 4)
-        .toggleWhenPressed(new ShooterSetSpeedPIDF(12000, m_ShooterSubsystem, false));
+    new JoystickButton(driver, Constants.j_autoAim)
+        .whileHeld(new InstantCommand(m_TurretSubsystem::turretAuto,m_TurretSubsystem));
+        //.whenReleased(c_resetTurret);
+
+    //new POVButton(operator, ) 
     
   }
 
@@ -169,12 +192,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
+    /* 
     return new AutonomousDrive(
       m_DriveTrain,
       m_IntakeSubsystem, 
       AutonomousDrive.StartingPosition.RED_FAR_RIGHT
-      );
+      );*/
+      double start = Timer.getFPGATimestamp();
+      return new RunCommand(() -> {
+        if(Timer.getFPGATimestamp() - start  < 0.55 ) m_DriveTrain.driveMecanum(0, 0.32, 0); 
+      }, m_DriveTrain);
   }
 
 }
