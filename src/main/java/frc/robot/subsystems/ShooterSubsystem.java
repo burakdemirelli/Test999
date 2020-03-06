@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private WPI_VictorSPX shooterSlave = new WPI_VictorSPX(Constants.k_shooterSPort);
   private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
   
-  private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB), true, EncodingType.k1X);
+  private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB), true, EncodingType.k4X);
 
 
   private boolean hoodRaised = true;
@@ -41,6 +41,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double targetHeight = Constants.height_Target;
   private final double cameraHeight = Constants.height_Cam;
   private final double initialAngle = Constants.angle_cam;
+
+  static private double ENCODER_EDGES_PER_REV = 4096 / 4.;
+  double encoderConstant = (1 / ENCODER_EDGES_PER_REV);
+
 
   public double getYaw() {
     return camTable.getEntry("targetYaw").getDouble(Double.NaN);
@@ -72,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getRPM(){
-    return shooterEncoder.getRate()*60/1024.0;
+    return shooterEncoder.getRate() * 60.;
   }
 
   public void setShooterVoltage(double voltage) {
@@ -130,7 +134,9 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMaster.setInverted(true);
     shooterSlave.setInverted(true);
     shooterSlave.follow(shooterMaster);
-    shooterEncoder.setSamplesToAverage(5);
+    shooterEncoder.setSamplesToAverage(50);
+    shooterEncoder.setDistancePerPulse(encoderConstant);
+
 
   }
 

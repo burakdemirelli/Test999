@@ -33,9 +33,9 @@ public class TurretSubsystem extends SubsystemBase {
   private AHRS bodyGyro;
   private double initAngle;
 
-  private final double home = -90;
+  private final double home = 0;
   
-  private final double[] edges = {-100, 45};
+  private final double[] edges = {-90, 120};
 
   public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro, double initAngle){
     turretGyro = gyro;
@@ -97,7 +97,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double getBodyAngle(){
-    return bodyGyro.getAngle() - initAngle;
+    return -bodyGyro.getAngle() - initAngle;
   }
 
   public double getGyroAngle() {
@@ -119,6 +119,10 @@ public class TurretSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // things that will every time the scheduler runs
+    SmartDashboard.putNumber("body angle", getBodyAngle());
+    SmartDashboard.putNumber("turret angle", getGyroAngle());
+    SmartDashboard.putNumber("relative angle", getRelativeAngle());
+
   }
 }
  
