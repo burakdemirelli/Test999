@@ -10,17 +10,16 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.*;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class AutoAimButBad extends ParallelCommandGroup {
 
   private ShooterSubsystem shooter;
   private TurretSubsystem turret;
+  private LED led;
+
   /**
    * Creates a new AutoAimButBad.
    */
-  public AutoAimButBad(TurretSubsystem turret, ShooterSubsystem shooter) {
+  public AutoAimButBad(TurretSubsystem turret, ShooterSubsystem shooter, LED led) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
@@ -31,17 +30,27 @@ public class AutoAimButBad extends ParallelCommandGroup {
         },
         turret
       ),
-      new ShooterSetSpeedPIDF(shooter, true)
+      new ShooterSetSpeedPIDF(shooter, true),
+      new RunCommand(() -> {
+        led.turnOnLED();
+      }) {
+        @Override
+        public void end(boolean interrupted) {
+          led.turnOffLED();
+        }
+      }
       
       // start shooter motor
     );
     this.turret = turret;
     this.shooter = shooter;
+    this.led = led;
   }
 
   @Override
   public void end(boolean interrupted) {
     turret.set(0);
     shooter.stopEverything();
+    led.turnOffLED();
   }
 }

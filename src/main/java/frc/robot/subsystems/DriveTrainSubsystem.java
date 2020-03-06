@@ -10,16 +10,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.*;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.*;
+import frc.robot.Constants.DriveMotors;
 
 public class DriveTrainSubsystem extends SubsystemBase {
   public WPI_TalonSRX frontLeftMotor = new WPI_TalonSRX(Constants.frontLeftMotor_1);
@@ -30,7 +28,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   private AHRS bodyGyro; 
 
-/*
+/* TODO: put these back in for trajectory autonomous driving
   private Encoder frontLeftEncoder = new Encoder(DriveMotors.frontLeftEncoderA, DriveMotors.frontLeftEncoderB);
   private Encoder rearLeftEncoder = new Encoder(DriveMotors.rearLeftEncoderA, DriveMotors.rearLeftEncoderB);
   private Encoder frontRightEncoder = new Encoder(DriveMotors.frontRightEncoderA, DriveMotors.frontRightEncoderB);
@@ -38,7 +36,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
 */
 
   public MecanumDrive mecanumDrive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
- // public MecanumDrive drive = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor);
  // public double MecanumSpeedLimiting = Constants.speedLimiting;
 
 

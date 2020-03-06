@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -29,7 +28,7 @@ public class HoodToggleCommand extends CommandBase {
   @Override
   public void initialize() {
       startTime = Timer.getFPGATimestamp();
-      initialState= m_ShooterSubsystem.getHoodState();
+      initialState = m_ShooterSubsystem.getHoodState();
       if (initialState.equals(ShooterSubsystem.in)) {
         m_ShooterSubsystem.setHood("out");
       } else {
@@ -42,7 +41,7 @@ public class HoodToggleCommand extends CommandBase {
   @Override
   public void execute() {
     if (Timer.getFPGATimestamp() - startTime > Constants.hoodMoveTime) {
-      end(true);
+      end(false);
     }
 
   }

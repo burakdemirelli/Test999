@@ -65,7 +65,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return RPM;
   }
 
-  
+  public static double getRevSpeed() {
+    return Constants.shooterRevSpeed;
+  }
+
   public double getRequiredRPM() {
     // https://www.desmos.com/calculator/siuq5kkhtq
     final double a = 670;

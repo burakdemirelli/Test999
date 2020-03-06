@@ -75,26 +75,12 @@ public class RobotContainer {
     // Configure the button bindings
     bodyGyro.zeroYaw();
     turretGyro.setYaw(0);
-    double initAngle = bodyGyro.getAngle();
+    double bodyInitAngle = bodyGyro.getAngle();
 
     m_ShooterSubsystem = new ShooterSubsystem(camTable);
-    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, initAngle, camTable);
+    m_TurretSubsystem = new TurretSubsystem(turretGyro, bodyGyro, bodyInitAngle, camTable);
     m_DriveTrain = new DriveTrainSubsystem(bodyGyro);
 
-    // c_AutoAimCommand = new AutoAimCommand(m_ShooterSubsystem, m_TurretSubsystem);
-    // c_resetTurret = new resetTurretHome(m_ShooterSubsystem, m_TurretSubsystem);
-
-    /*
-    (new RunCommand(() -> {
-      
-      m_LEDSubsystem.turnOnLED();
-    }, m_LEDSubsystem) {
-      @Override
-      public void end(boolean i) {
-        m_LEDSubsystem.turnOffLED();
-      }
-    }).schedule();
-*/
     configureButtonBindings();
   }
 
@@ -110,15 +96,20 @@ public class RobotContainer {
     new RunCommand ( () -> m_DriveTrain.driveMecanum(
       driver.getRawAxis(Constants.m_YPort), 
       driver.getRawAxis(Constants.m_XPort), 
-      driver.getRawAxis(Constants.m_ZPort)),
-      m_DriveTrain));
+      driver.getRawAxis(Constants.m_ZPort)
+    ),
+    m_DriveTrain)
+  );
 
   //Intake
   m_IntakeSubsystem.setDefaultCommand(
-    new RunCommand ( () -> m_IntakeSubsystem.intakeTrigger(
-      operator.getRawAxis(2),
-       -1*operator.getRawAxis(3)), 
-       m_IntakeSubsystem));
+    new RunCommand ( () -> 
+      m_IntakeSubsystem.intakeTrigger(
+        operator.getRawAxis(2),
+        -1*operator.getRawAxis(3)
+      ), 
+      m_IntakeSubsystem)
+    );
 
   m_TurretSubsystem.setDefaultCommand(
       new RunCommand (
@@ -128,7 +119,7 @@ public class RobotContainer {
           if (Math.abs(move) > 0.1) {
             m_TurretSubsystem.set(move);
           } else {
-            m_TurretSubsystem.goHome();
+            m_TurretSubsystem.set(0);
           }
         },
        m_TurretSubsystem
@@ -137,13 +128,13 @@ public class RobotContainer {
 
     m_ShooterSubsystem.setDefaultCommand(
       new RunCommand(() -> m_ShooterSubsystem.setShooterVoltage(
-          operator.getRawAxis(1)*12 * 0.75
+          operator.getRawAxis(1)*9
       ), m_ShooterSubsystem)
     );
 
 
     new JoystickButton(driver, 7)
-        .whileHeld(new AutoAimButBad(m_TurretSubsystem, m_ShooterSubsystem)
+        .whileHeld(new AutoAimButBad(m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem)
         );
   
   
@@ -181,9 +172,6 @@ public class RobotContainer {
         .whileHeld(new InstantCommand(m_TurretSubsystem::turretAuto,m_TurretSubsystem));
         //.whenReleased(c_resetTurret);
 
-    //new POVButton(operator, ) 
-    
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

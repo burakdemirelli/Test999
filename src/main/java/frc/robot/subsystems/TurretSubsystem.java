@@ -37,7 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
   
   private final double[] edges = {-90, 120};
 
-  public NetworkTable camTable;
+  private NetworkTable camTable;
 
 
   public TurretSubsystem(PigeonIMU gyro, AHRS bodyGyro, double initAngle, NetworkTable camTable){
@@ -84,15 +84,13 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void turnToAngle(double angle) {
     angle = clamp(angle);
-     if (turretPID.atSetpoint() != true) {
-       set(
-         MathUtil.clamp(
-           turretPID.calculate(getRelativeAngle(), angle) - 0.6,
-           0.6, 
-           angle
-         )
-       );
-     }
+    if (turretPID.atSetpoint() != true) {
+      set(MathUtil.clamp(turretPID.calculate(
+        getRelativeAngle(),angle) - 0.6,
+        0.6, 
+        angle
+      ));
+    }
   }
 
   public void turnToTarget() {

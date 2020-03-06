@@ -17,7 +17,6 @@ public class IntakeJamRoutine extends CommandBase {
    */
   private IntakeSubsystem m_intakeSubsystem;
   private double initTime;
-  private double currentTime;
 
   public IntakeJamRoutine(IntakeSubsystem m_intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.

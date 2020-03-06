@@ -77,32 +77,24 @@ public class ShooterSetSpeedPIDF extends PIDCommand {
 
   @Override
   public void initialize() {
-    // TODO Auto-generated method stub
     super.initialize();
 
-    
     m_motorOutput = 0;
   }
 
   @Override
   public void execute() {
-    // TODO Auto-generated method stub
     super.execute();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    if(isInterruptable && getController().atSetpoint()) return true;
-    else {
-      return false;
-    }
+    return isInterruptable && getController().atSetpoint();
   }
 
   @Override
   public void end(boolean interrupted) {
-    // TODO Auto-generated method stub
     super.end(interrupted);
     if(!isInterruptable) m_shooterSubsystem.stopShooter();
   }
