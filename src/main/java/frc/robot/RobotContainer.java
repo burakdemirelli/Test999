@@ -171,7 +171,7 @@ public class RobotContainer {
     new JoystickButton(driver, Constants.j_autoAim)
         .whileHeld(new InstantCommand(m_TurretSubsystem::turretAuto,m_TurretSubsystem));
         //.whenReleased(c_resetTurret);
-
+      }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -181,14 +181,16 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     /* 
     return new AutonomousDrive(
+
       m_DriveTrain,
       m_IntakeSubsystem, 
       AutonomousDrive.StartingPosition.RED_FAR_RIGHT
       );*/
-      double start = Timer.getFPGATimestamp();
       return new RunCommand(() -> {
-        if(Timer.getFPGATimestamp() - start  < 0.55 ) m_DriveTrain.driveMecanum(0, 0.32, 0); 
-      }, m_DriveTrain);
+        m_DriveTrain.driveMecanum(0, -0.32, 0); 
+      }, m_DriveTrain).withTimeout(1.2);
+      
   }
 
 }
+ 
