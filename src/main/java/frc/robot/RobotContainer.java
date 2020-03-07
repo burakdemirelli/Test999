@@ -94,9 +94,9 @@ public class RobotContainer {
   // Drivetrain
   m_DriveTrain.setDefaultCommand(
     new RunCommand ( () -> m_DriveTrain.driveMecanum(
-      driver.getRawAxis(Constants.m_YPort), 
+      driver.getRawAxis(Constants.m_ZPort), 
       driver.getRawAxis(Constants.m_XPort), 
-      driver.getRawAxis(Constants.m_ZPort)
+      driver.getRawAxis(Constants.m_YPort)
     ),
     m_DriveTrain)
   );
