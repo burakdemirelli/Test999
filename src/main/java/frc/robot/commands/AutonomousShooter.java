@@ -40,24 +40,25 @@ public class AutonomousShooter extends SequentialCommandGroup {
         // fwd
         new RunCommand(() -> {
             drivetrain.driveMecanum(0, -0.32, 0); 
-          }, drivetrain).withTimeout(1.2),
+          }, drivetrain).withTimeout(1.8)
+          /*
         // rev
         new AutoAimButBad(turret, shooter, led) {
           @Override public boolean isFinished() {
-            return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 50;
+            return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 50
+                && Math.abs(turret.getYaw()) < 1.5;
           }
       },
       new ParallelRaceGroup(
         new AutoAimButBad(turret, shooter, led),
         new RunCommand(() -> {
-            feeder.feederIn(0.7);
+            feeder.feederOut(0.7);
             System.out.println("feeder running");
         }, feeder),
         new RunCommand(() -> {
             storage.storageIn();
-        }, shooter),
-        new RunCommand(() -> {}).withTimeout(5)
-      )
+        }, storage).withTimeout(5)
+      )*/
 
     );
   }
