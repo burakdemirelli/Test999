@@ -159,6 +159,15 @@ public class RobotContainer {
       .whileHeld(new InstantCommand(m_FeederSubsystem:: feederOut, m_FeederSubsystem))
       .whenReleased(new InstantCommand(m_FeederSubsystem::stopEverything, m_FeederSubsystem));
     
+    new JoystickButton(operator, 7)
+    .whileHeld(
+      new RunCommand(() ->m_FeederSubsystem.feederIn(
+        0.75
+    )), false)    
+    .whenReleased(new InstantCommand(m_FeederSubsystem::stopEverything, m_FeederSubsystem));
+
+      
+    
     new JoystickButton(operator, 3)
       .whileHeld(new IntakeJamRoutine(m_IntakeSubsystem));
 
@@ -186,10 +195,7 @@ public class RobotContainer {
       m_IntakeSubsystem, 
       AutonomousDrive.StartingPosition.RED_FAR_RIGHT
       );*/
-      return new RunCommand(() -> {
-        m_DriveTrain.driveMecanum(0, -0.32, 0); 
-      }, m_DriveTrain).withTimeout(1.2);
-      
+      return new AutonomousShooter(m_DriveTrain, m_IntakeSubsystem, m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem, m_FeederSubsystem, m_StorageSubsystem);
   }
 
 }
