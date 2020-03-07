@@ -34,7 +34,7 @@ public class HoodToggleCommand extends CommandBase {
       } else {
         m_ShooterSubsystem.setHood("in");
       }
-      System.out.println("starting hood movement");
+      // System.out.println("starting hood movement");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

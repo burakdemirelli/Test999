@@ -68,13 +68,13 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   private void setLimitless(double speed) {
-    System.out.println("speed: " + speed);
+    // System.out.println("speed: " + speed);
     turret.setVoltage(speed*12.0);
   }
 
   public double getYaw() {
     double yaw =camTable.getEntry("targetYaw").getDouble(Double.NaN); 
-    System.out.println("yaw: " + yaw);
+    // System.out.println("yaw: " + yaw);
     return yaw;
   }
 
@@ -125,7 +125,7 @@ public class TurretSubsystem extends SubsystemBase {
   private double clamp(double angle) {
     angle = angle%360;
     double ret = MathUtil.clamp(angle, edges[0], edges[1]);
-    if (ret != angle) System.out.println("Turret tried to turn to outside bounds");
+    // if (ret != angle) System.out.println("Turret tried to turn to outside bounds");
     return ret;
   }
 
@@ -133,20 +133,10 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println("gyro relative:" + getRelativeAngle());
-    System.out.println("gyro turret:" + getGyroAngle());
-    System.out.println("gyro body:" + bodyGyro.getAngle());
+  
+    // System.out.println("gyro relative:" + getRelativeAngle());
+    // System.out.println("gyro turret:" + getGyroAngle());
+    // System.out.println("gyro body:" + bodyGyro.getAngle());
     SmartDashboard.putNumber("relative gyro", getRelativeAngle());
-    SmartDashboard.putNumber("body gyro", bodyGyro.getAngle());
-    // things that will every time the scheduler runs
-    SmartDashboard.putNumber("body angle", getBodyAngle());
-    SmartDashboard.putNumber("turret angle", getGyroAngle());
-    SmartDashboard.putNumber("relative angle", getRelativeAngle());
-    //SmartDashboard.putData(Constants.turretkP);
-    //SmartDashboard.putData(Constants.turretkI);
-    //
-    //SmartDashboard.putData(Constants.turretkD);
-;
   }
 }
- 

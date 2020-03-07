@@ -117,9 +117,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public void zeroHeading(){
     //m_gyro.setYaw(0);
-    System.out.println("gyroresetINIT");
+    // System.out.println("gyroresetINIT");
     bodyGyro.zeroYaw();
-    System.out.println("gyroreset");
+    // System.out.println("gyroreset");
   }
   
 

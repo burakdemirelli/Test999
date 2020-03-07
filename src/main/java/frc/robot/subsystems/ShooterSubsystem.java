@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getDistanceToTarget(double pitch) {
     double distance = (targetHeight-cameraHeight) /   Math.tan(Math.toRadians(pitch + initialAngle));
-    System.out.println(distance);
+    // System.out.println(distance);
     return distance;
   }
 
@@ -110,14 +110,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setHood(String direction) {
     double speed = (direction.equals(in) ?  0.6838 : -1) * Constants.hoodSpeed;
-    System.out.println("setting hood to " + speed);
+    // System.out.println("setting hood to " + speed);
     hood.set(speed);
   }
 
 
   public void stopHood(String finalState) {
       hood.set(0);
-      System.out.println("setting hood to 0");
+      // System.out.println("setting hood to 0");
       hoodRaised = finalState.equals(out);
   }
 

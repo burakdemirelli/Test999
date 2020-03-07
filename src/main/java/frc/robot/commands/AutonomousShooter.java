@@ -29,7 +29,6 @@ public class AutonomousShooter extends SequentialCommandGroup {
     public AutonomousShooter(
         DriveTrainSubsystem drivetrain,
         IntakeSubsystem intake,
-        StartingPosition start,
         TurretSubsystem turret,
         ShooterSubsystem shooter,
         LED led,
