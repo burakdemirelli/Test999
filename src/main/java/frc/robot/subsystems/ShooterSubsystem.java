@@ -71,9 +71,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getRequiredRPM() {
     // https://www.desmos.com/calculator/siuq5kkhtq
-    final double a = 670;
-    final double b = -3.03;
-    final double c = 10370;
+    final double a = 460;
+    final double b = -3.7;
+    final double c = 10350;
 
     double distance = getDistanceToTarget(getPitch());
     double RPM = a*Math.log(distance + b) + c;
