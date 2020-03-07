@@ -59,21 +59,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
 
-  public double getRequiredRPMLegacy() {
-    double distance = getDistanceToTarget(getPitch());
-    double RPM = 750*Math.log(distance - 310) + 5600;
-    return RPM;
-  }
-
   public static double getRevSpeed() {
     return Constants.shooterRevSpeed;
   }
 
   public double getRequiredRPM() {
-    // https://www.desmos.com/calculator/siuq5kkhtq
-    final double a = 460;
-    final double b = -3.7;
-    final double c = 10350;
+    // https://www.desmos.com/calculator/siuq5 kkhtq
+    final double a = 750;
+    final double b = -2.82;
+    final double c = 9810;
 
     double distance = getDistanceToTarget(getPitch());
     double RPM = a*Math.log(distance + b) + c;
@@ -154,6 +148,10 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("shooter RPM", Math.floor(getRPM()));
     SmartDashboard.putNumber("distance", getDistanceToTarget(getPitch()));
+    // SmartDashboard.putNumber("cam angle",  Math.toDegrees(Math.atan((- Constants.height_Cam + Constants.height_Target) / Constants.distance_Target)) - getPitch());
+    SmartDashboard.putNumber("required RPM", getRequiredRPM());
+  
+    
   }
 
 }
