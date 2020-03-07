@@ -105,8 +105,8 @@ public class RobotContainer {
   m_IntakeSubsystem.setDefaultCommand(
     new RunCommand ( () -> 
       m_IntakeSubsystem.intakeTrigger(
-        operator.getRawAxis(2),
-        -1*operator.getRawAxis(3)
+        operator.getRawAxis(2), // left trigger: out
+        -1*operator.getRawAxis(3) // right trigger: in
       ), 
       m_IntakeSubsystem)
     );
@@ -116,7 +116,7 @@ public class RobotContainer {
         () -> {
           double move = operator.getRawAxis(4);
           //System.out.println(move);
-          if (Math.abs(move) > 0.1) {
+          if (Math.abs(move) > 0.1) { // XXX: ??????????????????????
             m_TurretSubsystem.set(move);
           } else {
             m_TurretSubsystem.set(0);
@@ -134,7 +134,7 @@ public class RobotContainer {
 
 
     new JoystickButton(driver, 7)
-        .whileHeld(new AutoAimButBad(m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem)
+        .whileHeld(new AutoAim(m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem)
         );
   
   
@@ -163,10 +163,9 @@ public class RobotContainer {
     .whileHeld(
       new RunCommand(() ->m_FeederSubsystem.feederIn(
         0.75
-    )), false)    
+    )), false)
     .whenReleased(new InstantCommand(m_FeederSubsystem::stopEverything, m_FeederSubsystem));
 
-      
     
     new JoystickButton(operator, 3)
       .whileHeld(new IntakeJamRoutine(m_IntakeSubsystem));

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+
 // Joystick and Buttons
     public static final int m_Joystick1 = 1;
     public static final int m_Joystick2 = 0;

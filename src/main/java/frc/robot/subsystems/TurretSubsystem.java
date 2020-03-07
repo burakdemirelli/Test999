@@ -69,7 +69,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   private void setLimitless(double speed) {
     // System.out.println("speed: " + speed);
-    turret.setVoltage(speed*12.0);
+    double voltage = 12*((speed-0.294)/(1-Math.abs(speed-0.294)))+5;
+    
+    turret.setVoltage(voltage);
   }
 
   public double getYaw() {
@@ -81,6 +83,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void turretAuto(){
     set(getYaw()*-0.024);
+    // TODO: I, D
   }
 
   public void turnToAngle(double angle) {
