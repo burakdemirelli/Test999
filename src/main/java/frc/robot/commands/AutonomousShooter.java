@@ -105,9 +105,3 @@ public class AutonomousShooter extends SequentialCommandGroup {
     return null;
   }
 }
-
-// TODO:
-// tick auto intake 
-// turret fake ff
-// https://www.desmos.com/calculator/0c9fwpk4b7
-// intake slow out
