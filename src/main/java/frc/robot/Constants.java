@@ -66,12 +66,12 @@ public final class Constants {
 //         public static final double m_thirdColorYellow = 0.113;
 
 //Vision
-	public static final double height_Target = 249.55;
-	//public static final double height_Target = 2.75;
+	public static final double height_Target = 2.4955;
+	// public static final double height_Target = 2.75;
 	public static final double height_Cam = .668;
-    // angle_cam = Math.toDegrees(Math.atan((- height_Cam + height_Target) / distance_Target)) - pitch;
-	public static final double angle_cam = 26.015784307789657443617472017916;
-
+	// public static final double distance_Target = 5.23;
+	public static final double angle_cam = 26.74;
+	
 //Turret
 	public static  int k_turretPort = 0;
 	public static  double turretkP = 0.030;
@@ -83,12 +83,12 @@ public final class Constants {
 	public static final int k_feederPort = 3;
 	public static final int k_feederBoostPort = 2;
 
-	public static final double storageSpeed = 0.65;
+	public static final double storageSpeed = 0.60;
 	public static final double feederSpeed = -0.8;
-	public static final double feederBoostSpeed = 0.45;
+	public static final double feederBoostSpeed = 0.63;
 	public static final double storageSpeed2 = -0.9;
 	public static final double feederSpeed2 = 0.8;
-	public static final double feederBoostSpeed2 = -0.45;
+	public static final double feederBoostSpeed2 = -0.63;
 	
     
     // Shooter
@@ -118,11 +118,12 @@ public final class Constants {
 */
 	public static final double shooterkS = 0.832 ;
 	public static final double shooterkV = 0.00059179;
-	public static final double shooterkA = 0.000189;
+	public static final double shooterkA = 0.000199;
 	//167
 	// public static final double shooterkP = 6.15e-12;
 	public static final double shooterkI = 1.35e-7;
-	public static final double shooterkP =  9.15e-12;
+	//public static final double shooterkP =  9.15e-12;
+	public static final double shooterkP =  10e-12;
 	public static final double shooterkD = 0;
 	public static final int drivebaseWidth = 0;
 	public static final int drivebaseLength = 0;
