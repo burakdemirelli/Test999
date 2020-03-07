@@ -68,9 +68,11 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   private void setLimitless(double speed) {
+    // https://www.desmos.com/calculator/ezd3corg0v
     // System.out.println("speed: " + speed);
-    double voltage = 12*((speed-0.294)/(1-Math.abs(speed-0.294)))+5;
-    
+    speed = 2 * speed / 3;
+    double voltage = 12*((speed-0.294)/(1-Math.abs(speed-0.294)))+4.8;
+
     turret.setVoltage(voltage);
   }
 
