@@ -22,12 +22,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
   }
 
-  public void intakeForward() {
-    intake_Supporter.set(Constants.intakeKForward);
+  public void intakeIn() {intakeIn(1);};
+  public void intakeIn(double scale) { // in
+    intake_Supporter.set(Constants.intakeKForward*scale); // -1
   }
-  public void intakeReverse() {
-    intake_Supporter.set(Constants.intakeKReverse);
+
+  public void intakeOut() {intakeOut(1);};
+  public void intakeOut(double scale) { // out
+    intake_Supporter.set(Constants.intakeKReverse*scale);
   }
+
+
   public void intakeStop() {
     intake_Supporter.set(0);
   }
@@ -37,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
       intake_Supporter.set(a);
     }
     else {
-      intake_Supporter.set(b);
+      intake_Supporter.set(b*0.7);
     }
   }
 

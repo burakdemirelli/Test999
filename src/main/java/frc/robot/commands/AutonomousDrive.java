@@ -66,7 +66,7 @@ public class AutonomousDrive extends ParallelRaceGroup {
       getAutonomousCommand(drivetrain, start.ts),
       new RunCommand(
         () -> {
-          intake.intakeForward();
+          intake.intakeIn();
         }, intake) {
         @Override
         public void end(boolean interr) {

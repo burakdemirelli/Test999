@@ -34,11 +34,11 @@ public class IntakeJamRoutine extends CommandBase {
   @Override
   public void execute() {
     if(Timer.getFPGATimestamp() - initTime < 0.2) {
-      m_intakeSubsystem.intakeReverse();
+      m_intakeSubsystem.intakeIn();
       // System.out.print("intakereverse");
     }
     else if(Timer.getFPGATimestamp() - initTime >= 0.2 && Timer.getFPGATimestamp() - initTime < 0.5) {
-      m_intakeSubsystem.intakeForward();
+      m_intakeSubsystem.intakeIn();
       // System.out.print("intakeforward");
     }
     else{

@@ -36,20 +36,20 @@ public class AutonomousShooter extends SequentialCommandGroup {
         StorageSubsystem storage
         ) {
     super(
-        // fwd
-        new RunCommand(() -> {
-            drivetrain.driveMecanum(0, -0.32, 0); 
-          }, drivetrain).withTimeout(1.8)
-          /*
-        // rev
-        new AutoAimButBad(turret, shooter, led) {
-          @Override public boolean isFinished() {
-            return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 50
-                && Math.abs(turret.getYaw()) < 1.5;
-          }
+      // fwd
+      new RunCommand(() -> {
+          drivetrain.driveMecanum(0, -0.32, 0); 
+        }, drivetrain).withTimeout(1.8),
+      new AutoDropIntake(drivetrain),
+      // rev
+      new AutoAim(turret, shooter, led) {
+        @Override public boolean isFinished() {
+          return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 50
+              && Math.abs(turret.getYaw()) < 1.5;
+        }
       },
       new ParallelRaceGroup(
-        new AutoAimButBad(turret, shooter, led),
+        new AutoAim(turret, shooter, led),
         new RunCommand(() -> {
             feeder.feederOut(0.7);
             System.out.println("feeder running");
@@ -57,7 +57,7 @@ public class AutonomousShooter extends SequentialCommandGroup {
         new RunCommand(() -> {
             storage.storageIn();
         }, storage).withTimeout(5)
-      )*/
+      )
 
     );
   }
@@ -102,23 +102,12 @@ public class AutonomousShooter extends SequentialCommandGroup {
     );
 
 
-    RamseteCommand ramseteCommand /*= new RamseteCommand(
-        exampleTrajectory,
-        m_driveTrain::getPose,
-        new RamseteController(Autonomous.kRamseteB, Autonomous.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveMotors.ksVolts,
-          DriveMotors.kvVoltSecondsPerMeter,
-          DriveMotors.kaVoltSecondsSquaredPerMeter),
-          DriveMotors.kDriveKinematics,
-          m_driveTrain::getWheelSpeeds,
-        new PIDController(DriveMotors.kPDriveVel, 0, 0),
-        new PIDController(DriveMotors.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        m_driveTrain::tankDriveVolts,
-        m_driveTrain
-    )*/;
-
-    // Run path following command, then stop at the end.
-    return null/*.andThen(() -> m_driveTrain.tankDriveVolts(0, 0))*/;
+    return null;
   }
 }
+
+// TODO:
+// tick auto intake 
+// turret fake ff
+// https://www.desmos.com/calculator/0c9fwpk4b7
+// intake slow out
