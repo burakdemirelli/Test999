@@ -16,16 +16,17 @@ public class FeederSubsystem extends SubsystemBase {
   private Victor feeder = new Victor(Constants.k_feederPort);
   private Victor feederBoost = new Victor(Constants.k_feederBoostPort);
 
-  public void feederIn() {
-    feeder.set(Constants.feederSpeed2);
-    feederBoost.set(Constants.feederBoostSpeed2);
+  public void feederIn() {feederIn(1);};
+  public void feederIn(double scale) {
+    feeder.set(Constants.feederSpeed2*scale);
+    feederBoost.set(Constants.feederBoostSpeed2*scale);
   }
 
-  public void feederOut() {
-    feeder.set(Constants.feederSpeed);
-    feederBoost.set(Constants.feederBoostSpeed);
-
-
+  
+  public void feederOut() {feederOut(1);};
+  public void feederOut(double scale) {
+    feeder.set(Constants.feederSpeed*scale);
+    feederBoost.set(Constants.feederBoostSpeed*scale);
   }
 
   public void runFeederBoost() {
