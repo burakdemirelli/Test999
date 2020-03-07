@@ -10,7 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.*;
 
-public class AutoAimButBad extends ParallelCommandGroup {
+public class AutoAim extends ParallelCommandGroup {
 
   private ShooterSubsystem shooter;
   private TurretSubsystem turret;
@@ -19,7 +19,7 @@ public class AutoAimButBad extends ParallelCommandGroup {
   /**
    * Creates a new AutoAimButBad.
    */
-  public AutoAimButBad(TurretSubsystem turret, ShooterSubsystem shooter, LED led) {
+  public AutoAim(TurretSubsystem turret, ShooterSubsystem shooter, LED led) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
