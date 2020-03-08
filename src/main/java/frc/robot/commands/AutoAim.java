@@ -27,6 +27,7 @@ public class AutoAim extends ParallelCommandGroup {
       new RunCommand(
         () -> {
           turret.turretAuto();
+          System.out.println("aiming with turret");
         },
         turret
       ),

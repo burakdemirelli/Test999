@@ -39,10 +39,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intakeTrigger(double a, double b) {
     if (Math.abs(a) > Math.abs(b)) {
-      intake_Supporter.set(a);
+      intake_Supporter.set(a*0.57 );
     }
     else {
-      intake_Supporter.set(b*0.7);
+      intake_Supporter.set(b*0.85);
     }
   }
 

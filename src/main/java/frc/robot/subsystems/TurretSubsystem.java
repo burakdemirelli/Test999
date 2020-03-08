@@ -52,6 +52,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void set(double speed) {
+    SmartDashboard.putNumber("charactersiz", speed);
     setLimitless(speed);
   }
 
@@ -67,12 +68,14 @@ public class TurretSubsystem extends SubsystemBase {
     return ret;
   }
 
-  private void setLimitless(double speed) {
+  private void setLimitless(double speed) {    
     // https://www.desmos.com/calculator/ezd3corg0v
     // System.out.println("speed: " + speed);
-    speed = 2 * speed / 3;
-    double voltage = 12*((speed-0.294)/(1-Math.abs(speed-0.294)))+4.8;
-
+    double voltage = speed * 12;
+    //speed = 2 * speed / 3;
+    // double voltage = 12*((speed-0.294)/(1-Math.abs(speed-0.294)))+4.8;
+    // voltage = voltage > .5 ? voltage + (1/(voltage + 0.3)) : voltage;
+    SmartDashboard.putNumber("gyro voltage", voltage);
     turret.setVoltage(voltage);
   }
 
@@ -84,7 +87,10 @@ public class TurretSubsystem extends SubsystemBase {
 
 
   public void turretAuto(){
-    set(getYaw()*-0.024);
+    double yaw = getYaw();
+    yaw = Math.abs(yaw) < 2.5 ? (yaw > 0 ? -1 : 1) * 0.81 : yaw*-0.018;
+  
+    set(yaw);
     // TODO: I, D
   }
 
@@ -143,5 +149,6 @@ public class TurretSubsystem extends SubsystemBase {
     // System.out.println("gyro turret:" + getGyroAngle());
     // System.out.println("gyro body:" + bodyGyro.getAngle());
     SmartDashboard.putNumber("relative gyro", getRelativeAngle());
+
   }
 }

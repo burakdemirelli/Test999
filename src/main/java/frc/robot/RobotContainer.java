@@ -114,9 +114,9 @@ public class RobotContainer {
   m_TurretSubsystem.setDefaultCommand(
       new RunCommand (
         () -> {
-          double move = operator.getRawAxis(4);
+          double move = -operator.getRawAxis(4)*0.4;
           //System.out.println(move);
-          if (Math.abs(move) > 0.1) { // XXX: ??????????????????????
+          if (Math.abs(move) > 0.1) { // XXX: ??????,????????????????
             m_TurretSubsystem.set(move);
           } else {
             m_TurretSubsystem.set(0);
@@ -135,6 +135,10 @@ public class RobotContainer {
 
     new JoystickButton(driver, 7)
         .whileHeld(new AutoAim(m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem)
+        );
+    new JoystickButton(driver, 4)
+        .whileHeld(
+          new ShooterSetSpeedPIDF(9400, m_ShooterSubsystem, false)
         );
   
   

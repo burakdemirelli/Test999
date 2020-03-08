@@ -86,10 +86,10 @@ public final class Constants {
 
 	public static final double storageSpeed = 0.60;
 	public static final double feederSpeed = -0.8;
-	public static final double feederBoostSpeed = 0.63;
+	public static final double feederBoostSpeed = 0.55;
 	public static final double storageSpeed2 = -0.9;
 	public static final double feederSpeed2 = 0.8;
-	public static final double feederBoostSpeed2 = -0.63;
+	public static final double feederBoostSpeed2 = -0.55;
 	
     
     // Shooter
