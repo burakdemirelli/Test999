@@ -84,7 +84,7 @@ public final class Constants {
 	public static final int k_feederPort = 3;
 	public static final int k_feederBoostPort = 2;
 
-	public static final double storageSpeed = 0.60;
+	public static final double storageSpeed = 0.75;
 	public static final double feederSpeed = -0.8;
 	public static final double feederBoostSpeed = 0.55;
 	public static final double storageSpeed2 = -0.9;
