@@ -54,11 +54,16 @@ public class RobotContainer {
 
   private final FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
 
+  private final Climb m_ClimbSubsystem = new Climb();
+
+
   private final ShooterSubsystem m_ShooterSubsystem;
 
   //private final resetTurretHome c_resetTurret;
 
   private final LED m_LEDSubsystem = new LED();
+
+  private final Climb climb = new Climb();
 
   private static Joystick operator = new Joystick(Constants.m_Joystick1);
 
@@ -145,7 +150,11 @@ public class RobotContainer {
   
   
     new JoystickButton(operator, 7)
-      .whenPressed(new HoodToggleCommand(m_ShooterSubsystem));
+      .whileHeld(() -> {
+        climb.elevatorUp();
+      }, climb).whenReleased(() -> {
+        climb.stop();
+      });
   
     new JoystickButton(operator, 5)
     .whileHeld(new InstantCommand(m_StorageSubsystem::storageIn, m_StorageSubsystem))
@@ -183,7 +192,15 @@ public class RobotContainer {
     new JoystickButton(driver, Constants.j_autoAim)
         .whileHeld(new InstantCommand(m_TurretSubsystem::turretAuto,m_TurretSubsystem));
         //.whenReleased(c_resetTurret);
-      }
+
+    new JoystickButton(operator, 9)
+        .whileHeld(new InstantCommand(m_ClimbSubsystem::climbUp, m_ClimbSubsystem))
+        .whenReleased(new InstantCommand(m_ClimbSubsystem::climbStop, m_ClimbSubsystem));
+
+    new JoystickButton(operator, 10).whileHeld(new InstantCommand(m_ClimbSubsystem::climbDown, m_ClimbSubsystem))
+        .whenReleased(new InstantCommand(m_ClimbSubsystem::climbStop, m_ClimbSubsystem));
+      
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

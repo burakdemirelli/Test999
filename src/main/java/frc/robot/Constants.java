@@ -124,7 +124,7 @@ public final class Constants {
 	// public static final double shooterkP = 6.15e-12;
 	public static final double shooterkI = 1.35e-7;
 	//public static final double shooterkP =  9.15e-12;
-	public static final double shooterkP =  10e-12;
+	public static final double shooterkP =  098e-12;
 	public static final double shooterkD = 0;
 	public static final int drivebaseWidth = 0;
 	public static final int drivebaseLength = 0;
@@ -134,7 +134,11 @@ public final class Constants {
 	public static final double kPRearRightVel = 0;
 	//63
 	//public static double shooterkP = 0.0012;
+	
 
+	public class ClimbConstants {
+		public static final int elevatorPort = 1;
+	}
 
 
 	// TODO: !!!!!!!!!!!! fill these in

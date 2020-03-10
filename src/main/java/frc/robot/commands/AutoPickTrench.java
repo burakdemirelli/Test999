@@ -46,7 +46,7 @@ public class AutoPickTrench extends SequentialCommandGroup {
         new AutoAim(turret, shooter, led),
         new RunCommand(() -> {
             feeder.feederOut(0.7);
-            System.out.println("feeder running");
+           // System.out.println("feeder running");
         }, feeder),
         new RunCommand(() -> {
             storage.storageIn();

@@ -27,13 +27,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private WPI_TalonSRX shooterMaster = new WPI_TalonSRX(Constants.k_shooterMPort);
   private WPI_VictorSPX shooterSlave = new WPI_VictorSPX(Constants.k_shooterSPort);
-  private WPI_VictorSPX hood = new WPI_VictorSPX(Constants.k_hoodPort);
   
   private Encoder shooterEncoder = new Encoder(new DigitalInput(Constants.shooterEncoderA), new DigitalInput(Constants.shooterEncoderB), true, EncodingType.k4X);
 
   public NetworkTable camTable;
-
-  private boolean hoodRaised = true;  
 
   //GEÇİCİ
   private final double targetHeight = Constants.height_Target;
@@ -71,7 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double distance = getDistanceToTarget(getPitch());
     double RPM = a*Math.log(distance + b) + c;
-    return RPM;
+    return RPM + 90.0;
   }
 
  //GEÇİCİ SON
@@ -103,32 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void stopEverything() {
       shooterMaster.set(0);
-      hood.set(0);
   }
-
-  //#region hood
-
-  public void setHood(String direction) {
-    double speed = (direction.equals(in) ?  0.6838 : -1) * Constants.hoodSpeed;
-    // System.out.println("setting hood to " + speed);
-    hood.set(speed);
-  }
-
-
-  public void stopHood(String finalState) {
-      hood.set(0);
-      // System.out.println("setting hood to 0");
-      hoodRaised = finalState.equals(out);
-  }
-
-  public void stopHoodOnly() {
-      hood.set(0);
-  }
-
-  public String getHoodState() {
-      return this.hoodRaised ? out : in;
-  }
-  //#endregion
 
 
   public ShooterSubsystem(NetworkTable camTable) {

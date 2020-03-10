@@ -89,7 +89,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void turretAuto(){
     double yaw = getYaw();
     //yaw = Math.abs(yaw) < 2.5 ? (yaw > 0 ? -1 : 1) * 0.81 : yaw*-0.018;
-    yaw = yaw * -0.02;
+    yaw = yaw * -0.025;
     // TODO: I, D
     set(yaw);
   }

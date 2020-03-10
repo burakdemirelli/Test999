@@ -28,8 +28,7 @@ public class AutonomousShooter extends SequentialCommandGroup {
 
   private static double storageInTime = 1;
   private static double storageOutTime = .08;
-    /**
-     * Creates a new AutonomousDrive.
+       /* Creates a new AutonomousDrive.
      */
     public AutonomousShooter(
         DriveTrainSubsystem drivetrain,
@@ -47,17 +46,19 @@ public class AutonomousShooter extends SequentialCommandGroup {
         }, drivetrain).withTimeout(1.2),
       new AutoDropIntake(drivetrain),
       // rev
-      new AutoAim(turret, shooter, led) {
+      new AutoAim(turret, shooter, led).withTimeout(2) 
+      /*{
         @Override public boolean isFinished() {
-          return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 150
-              /*&& Math.abs(turret.getYaw()) < 2.5*/;
+          return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 150;
+              //&& Math.abs(turret.getYaw()) < 2.5
         }
-      },
+      }
+      */,
       new ParallelRaceGroup(
         new AutoAim(turret, shooter, led),
         new RunCommand(() -> {
             feeder.runFeederBoost();
-        }, feeder).withTimeout(0.1)
+        }, feeder).withTimeout(0.25)
       ),
       new ParallelRaceGroup(
         new AutoAim(turret, shooter, led),
