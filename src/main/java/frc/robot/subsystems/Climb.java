@@ -20,7 +20,7 @@ public class Climb extends SubsystemBase {
    * Creates a new Cl.
    */
   WPI_VictorSPX esc = new WPI_VictorSPX(ClimbConstants.elevatorPort);
-  Victor climbMotor = new Victor(0);
+  Victor climbMotor = new Victor(9);
 
 
 
