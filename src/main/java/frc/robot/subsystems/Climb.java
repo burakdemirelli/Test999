@@ -43,7 +43,7 @@ public class Climb extends SubsystemBase {
   }
   
   public void climbUp() {
-    climbMotor.set(0.3);
+    climbMotor.set(0.75);
   }
   
   public void climbDown() {

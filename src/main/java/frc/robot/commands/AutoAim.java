@@ -31,7 +31,9 @@ public class AutoAim extends ParallelCommandGroup {
         },
         turret
       ),
+
       new ShooterSetSpeedPIDF(shooter, true),
+
       new RunCommand(() -> {
         led.turnOnLED();
       }) {

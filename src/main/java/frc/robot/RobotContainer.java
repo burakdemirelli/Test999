@@ -63,7 +63,6 @@ public class RobotContainer {
 
   private final LED m_LEDSubsystem = new LED();
 
-  private final Climb climb = new Climb();
 
   private static Joystick operator = new Joystick(Constants.m_Joystick1);
 
@@ -141,6 +140,7 @@ public class RobotContainer {
     new JoystickButton(driver, 7)
         .whileHeld(new AutoAim(m_TurretSubsystem, m_ShooterSubsystem, m_LEDSubsystem)
         );
+
     new JoystickButton(driver, 4)
         .whileHeld(
           new ShooterSetSpeedPIDF(9400, m_ShooterSubsystem, false)
@@ -149,13 +149,7 @@ public class RobotContainer {
   
   
   
-    new JoystickButton(operator, 7)
-      .whileHeld(() -> {
-        climb.elevatorUp();
-      }, climb).whenReleased(() -> {
-        climb.stop();
-      });
-  
+
     new JoystickButton(operator, 5)
     .whileHeld(new InstantCommand(m_StorageSubsystem::storageIn, m_StorageSubsystem))
     .whenReleased(new InstantCommand(m_StorageSubsystem::stopEverything, m_StorageSubsystem));
@@ -197,9 +191,6 @@ public class RobotContainer {
         .whileHeld(new InstantCommand(m_ClimbSubsystem::climbUp, m_ClimbSubsystem))
         .whenReleased(new InstantCommand(m_ClimbSubsystem::climbStop, m_ClimbSubsystem));
 
-    new JoystickButton(operator, 10).whileHeld(new InstantCommand(m_ClimbSubsystem::climbDown, m_ClimbSubsystem))
-        .whenReleased(new InstantCommand(m_ClimbSubsystem::climbStop, m_ClimbSubsystem));
-      
     }
 
   /**

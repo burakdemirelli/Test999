@@ -46,14 +46,14 @@ public class AutonomousShooter extends SequentialCommandGroup {
         }, drivetrain).withTimeout(1.2),
       new AutoDropIntake(drivetrain),
       // rev
-      new AutoAim(turret, shooter, led).withTimeout(2) 
-      /*{
+      new AutoAim(turret, shooter, led)
+      {
         @Override public boolean isFinished() {
-          return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 150;
+          return Math.abs(shooter.getRPM() - shooter.getRequiredRPM()) < 100;
               //&& Math.abs(turret.getYaw()) < 2.5
         }
       }
-      */,
+      ,
       new ParallelRaceGroup(
         new AutoAim(turret, shooter, led),
         new RunCommand(() -> {
@@ -112,6 +112,7 @@ public class AutonomousShooter extends SequentialCommandGroup {
             storage.storageIn();
         }, storage).withTimeout(storageInTime)
       ),
+
       new InstantCommand(() -> {
         intake.intakeStop();
         storage.stopEverything();
